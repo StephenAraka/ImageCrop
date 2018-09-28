@@ -1,1 +1,2 @@
-# WidgetName
+# React Image Crop
+This 

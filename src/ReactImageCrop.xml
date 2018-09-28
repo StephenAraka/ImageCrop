@@ -4,14 +4,47 @@
     <description>Sample description</description>
     <icon/>
     <properties>
-        <property key="sampleText" type="translatableString" required="false">
-            <caption>Default value</caption>
-            <category>General</category>
-            <description>Sample text input</description>
-            <translations>
-                <translation lang="en_US">text</translation>
-                <translation lang="nl_NL">tekst</translation>
-            </translations>
+    <!-- Data Source -->
+        <property>
+            <caption></caption>
+            <category></category>
+            <description></description>
+        </property>
+
+        <property key="editable" type="enumeration" defaultValue="default">
+            <caption>Editable</caption>
+            <category>Appearance</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="default">Default</enumerationValue>
+                <enumerationValue key="never">Never</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="minWidth" type="integer" defaultValue="100">
+            <caption>Minimum width</caption>
+            <category>Appearance</category>
+            <description></description>
+        </property>
+        <property key="minHeight" type="integer" defaultValue="100">
+            <caption>Minimum height</caption>
+            <category>Appearance</category>
+            <description></description>
+        </property>
+        <property key="maxWidth" type="integer" defaultValue="700">
+            <caption>Maximum width</caption>
+            <category>Appearance</category>
+            <description></description>
+        </property>
+        <property key="maxHeight" type="integer" defaultValue="700">
+            <caption>Maximum height</caption>
+            <category>Appearance</category>
+            <description></description>
         </property>
     </properties>
 </widget>
+
+<!-- <property>
+    <caption></caption>
+    <category></category>
+    <description></description>
+</property> -->
