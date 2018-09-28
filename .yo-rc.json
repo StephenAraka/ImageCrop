@@ -1,0 +1,10 @@
+{
+  "generator-mendix-fob": {
+    "promptValues": {
+      "copyright": "FOB 2018",
+      "license": "Apache 2",
+      "author": "FoB",
+      "boilerplate": "empty"
+    }
+  }
+}

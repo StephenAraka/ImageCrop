@@ -1,1 +1,1 @@
-# ReactImageCrop
+# WidgetName
