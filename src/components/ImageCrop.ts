@@ -2,7 +2,7 @@ import { Component, createElement } from "react";
 
 export type imageSourceType = "localDatabase" | "onlineUrl";
 export type editableType = "default" | "never";
-interface ReactImageCropProps {
+interface ImageCropProps {
   imageSource: imageSourceType;
   editable: editableType;
   minWidth: number;
@@ -12,13 +12,13 @@ interface ReactImageCropProps {
 
 }
 
-class ReactImageCrop extends Component<ReactImageCropProps, {}> {
+class ImageCrop extends Component<ImageCropProps, {}> {
   render() {
       return createElement("div", {});
   }
 }
 
-export default ReactImageCrop;
+export default ImageCrop;
 
 // return createElement("div", { className: "react-image-wrapper" },
     //         createElement("img", { src: }));

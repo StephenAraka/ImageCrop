@@ -1,6 +1,6 @@
 {
-  "name": "reactimagecrop",
-  "widgetName": "ReactImageCrop",
+  "name": "imagecrop",
+  "widgetName": "ImageCrop",
   "version": "1.0.0",
   "description": "Crops images",
   "copyright": "FOB 2018",
