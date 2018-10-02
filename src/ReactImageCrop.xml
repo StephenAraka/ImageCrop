@@ -4,13 +4,18 @@
     <description>Sample description</description>
     <icon/>
     <properties>
-    <!-- Data Source -->
-        <property>
-            <caption></caption>
-            <category></category>
-            <description></description>
+       <!--Data source-->
+        <property key="dataSource" type="enumeration" defaultValue="XPath">
+            <caption>Data source</caption>
+            <category>Data source</category>
+            <description>Where the images should be retrieved from</description>
+            <enumerationValues>
+                <enumerationValue key="XPath">Database</enumerationValue>
+                <enumerationValue key="microflow">Microflow</enumerationValue>
+            </enumerationValues>
         </property>
 
+        <!--Appearance-->
         <property key="editable" type="enumeration" defaultValue="default">
             <caption>Editable</caption>
             <category>Appearance</category>
@@ -40,11 +45,28 @@
             <category>Appearance</category>
             <description></description>
         </property>
+        <!--Events-->
+        <property key="onClickOption" type="enumeration" defaultValue="doNothing">
+            <caption>On click</caption>
+            <category>Events</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="doNothing">Do nothing</enumerationValue>
+                <enumerationValue key="callMicroflow">Call microflow</enumerationValue>
+                <enumerationValue key="showPage">Show page</enumerationValue>
+            </enumerationValues>
+        </property>
+        <property key="onClickMicroflow" type="microflow" required="false">
+            <caption>On click microflow</caption>
+            <category>Events</category>
+            <description>The microflow to call when an image is clicked</description>
+            <returnType type="Void"/>
+        </property>
+        <property key="onClickForm" type="form" required="false">
+            <caption>On click page</caption>
+            <category>Events</category>
+            <description>The page to open when an image is clicked</description>
+        </property>
     </properties>
 </widget>
 
-<!-- <property>
-    <caption></caption>
-    <category></category>
-    <description></description>
-</property> -->
