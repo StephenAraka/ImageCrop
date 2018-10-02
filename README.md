@@ -1,1 +1,1 @@
-# ReactImageCrop
+# ImageCrop
