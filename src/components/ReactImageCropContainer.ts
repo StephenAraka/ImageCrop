@@ -1,14 +1,27 @@
 import { Component, createElement } from "react";
-import ReactImageCrop from "./ReactImageCrop";
+import ReactImageCrop, { editableType, imageSourceType } from "./ReactImageCrop";
 
-export interface ReactImageCropContainerProps {
-  sampleText: string;
+interface WrapperProps {
+  mxObject: mendix.lib.MxObject;
 }
 
-export default class ReactImageCropContainer extends Component<ReactImageCropContainerProps, {}> {
+export interface ReactImageCropContainerProps extends WrapperProps {
+  imageSource: imageSourceType;
+  editable: editableType;
+  minWidth: number;
+  minHeight: number;
+  maxWidth: number;
+  maxHeight: number;
+}
+
+export default class ReactImageCropContainer extends Component<ReactImageCropContainerProps> {
   render() {
-      return createElement(ReactImageCrop, {
-          sampleText: this.props.sampleText
-      });
+      return createElement(ReactImageCrop);
+  }
+
+  private getImage(newProps: ReactImageCropContainerProps) {
+    let image = "";
+    const mxObject = this.props.mxObject;
+    this.props.imageSource === "localDatabase" ? image = mx.data.getDocumentUrl(mxObject.getGuid()) :
   }
 }
