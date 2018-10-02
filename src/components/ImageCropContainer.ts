@@ -12,16 +12,19 @@ export interface ImageCropContainerProps extends WrapperProps {
   minHeight: number;
   maxWidth: number;
   maxHeight: number;
+  onClickMicroflow: string;
+  onClickForm: string;
+  onClickOption: onClickOptions;
 }
 
-export default class ImageCropContainer extends Component<ImageCropContainerProps> {
+interface ImageCropContainerState {
+    alertMessage?: string;
+}
+
+type onClickOptions = "doNothing" | "callMicroflow" | "showPage" | "openFullScreen";
+
+export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
   render() {
       return createElement(ImageCrop);
   }
-
-  // private getImage(newProps: ImageCropContainerProps) {
-  //   let image = "";
-  //   const mxObject = this.props.mxObject;
-  // //   this.props.imageSource === "localDatabase" ? image = mx.data.getDocumentUrl(mxObject.getGuid()) :
-  // }
 }
