@@ -5,14 +5,27 @@
     <icon/>
     <properties>
        <!--Data source-->
-        <property key="dataSource" type="enumeration" defaultValue="XPath">
+        <property key="dataSource" type="enumeration" defaultValue="static">
             <caption>Data source</caption>
             <category>Data source</category>
             <description>Where the images should be retrieved from</description>
             <enumerationValues>
-                <enumerationValue key="XPath">Database</enumerationValue>
+                <enumerationValue key="static">Database</enumerationValue>
+                <enumerationValue key="xpath">X-Path</enumerationValue>
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
+        </property>
+        <property key="staticImages" type="object" isList="true" required="false">
+            <caption>Static images</caption>
+            <category>Data source</category>
+            <description/>
+            <properties>
+                <property key="url" type="image">
+                    <caption>Image</caption>
+                    <category>Image</category>
+                    <description>Image to add to the Image crop</description>
+                </property>
+            </properties>
         </property>
         <!--Appearance-->
         <property key="editable" type="enumeration" defaultValue="default">
@@ -61,6 +74,7 @@
             <enumerationValues>
                 <enumerationValue key="doNothing">Do nothing</enumerationValue>
                 <enumerationValue key="callMicroflow">Call microflow</enumerationValue>
+                <enumerationValue key="callNanoflow">Call nanoflow</enumerationValue>
                 <enumerationValue key="showPage">Show page</enumerationValue>
             </enumerationValues>
         </property>
@@ -75,6 +89,16 @@
             <category>Events</category>
             <description>The page to open when an image is clicked</description>
         </property>
+        <property key="openPageAs" type="enumeration" defaultValue="content">
+                    <caption>Open page as</caption>
+                    <category>On click action</category>
+                    <description/>
+                    <enumerationValues>
+                        <enumerationValue key="content">Full page</enumerationValue>
+                        <enumerationValue key="popup">Popup</enumerationValue>
+                        <enumerationValue key="modal">Blocking popup</enumerationValue>
+                    </enumerationValues>
+                </property>
     </properties>
 </widget>
 
