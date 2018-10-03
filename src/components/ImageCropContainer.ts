@@ -24,6 +24,7 @@ export interface ImageCropContainerProps extends WrapperProps {
   onClickOption: onClickOptions;
   openPageAs: PageLocation;
   url: string;
+  staticImages: object;
 }
 
 interface ImageCropContainerState {
@@ -52,6 +53,25 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     }
     const imageUrl = image;
     if (imageUrl)
-    this.setState({ imageUrl });
+      this.setState({ imageUrl });
+  }
+
+  //     componentWillUnmount() {
+  //     if (this.subscriptionHandle) window.mx.data.unsubscribe(this.subscriptionHandle);
+  // }
+
+  public static validateProps(props: ImageCropContainerProps): string {
+    let message = "";
+    if (props.dataSource === "static" && !props.staticImages) {
+      message = "For the data source option 'Static', at least one static image should be added";
+    }
+    if (props.dataSource === "XPath" && !props.dataSource) {
+      message = "For the data source 'XPath', the images entity is required";
+    }
+    if (props.dataSource === "microflow" && !props.onClickMicroflow) {
+      message = "For data source option 'microflow', a data source microflow is required";
+    }
+
+    return message;
   }
 }
