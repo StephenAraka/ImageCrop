@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<widget id="com.mendix.widget.custom.Imagecrop.ImageCrop" needsEntityContext="false" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
+<widget id="com.mendix.widget.custom.Imagecrop.ImageCrop" needsEntityContext="true" offlineCapable="true" xmlns="http://www.mendix.com/widget/1.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mendix.com/widget/1.0/ ../xsd/widget.xsd">
     <name>ImageCrop</name>
     <description>Sample description</description>
     <icon/>
@@ -14,18 +14,6 @@
                 <enumerationValue key="xpath">X-Path</enumerationValue>
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
-        </property>
-        <property key="staticImages" type="object" isList="true" required="false">
-            <caption>Static images</caption>
-            <category>Data source</category>
-            <description/>
-            <properties>
-                <property key="url" type="image">
-                    <caption>Image</caption>
-                    <category>Image</category>
-                    <description>Image to add to the Image crop</description>
-                </property>
-            </properties>
         </property>
         <!--Appearance-->
         <property key="editable" type="enumeration" defaultValue="default">
