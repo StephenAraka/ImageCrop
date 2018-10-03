@@ -3,7 +3,7 @@
     <name>ImageCrop</name>
     <description>Sample description</description>
     <icon/>
-    <properties>
+     <properties>
        <!--Data source-->
         <property key="dataSource" type="enumeration" defaultValue="static">
             <caption>Data source</caption>
@@ -15,17 +15,29 @@
                 <enumerationValue key="microflow">Microflow</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="staticImages" type="object" isList="true" required="false">
-            <caption>Static images</caption>
+        <property key="imagesEntity" type="entity" required="false">
+            <caption>Images entity</caption>
             <category>Data source</category>
-            <description/>
-            <properties>
-                <property key="url" type="image">
-                    <caption>Image</caption>
-                    <category>Image</category>
-                    <description>Image to add to the Image crop</description>
-                </property>
-            </properties>
+            <description>The entity from which the images will be retrieved. Should extend System.Image or provide a url attribute.</description>
+        </property>
+        <property key="entityConstraint" type="entityConstraint" entityProperty="imagesEntity" required="false">
+            <caption>XPath</caption>
+            <category>Data source</category>
+            <description>Constraint on the images entity</description>
+        </property>
+        <property key="dataSourceMicroflow" type="microflow" required="false">
+            <caption>Microflow</caption>
+            <category>Data source</category>
+            <description>Returns the images to display</description>
+            <returnType type="Object" entityProperty="imagesEntity" isList="true"/>
+        </property>
+        <property key="urlAttribute" type="attribute" required="false" entityProperty="imagesEntity">
+            <caption>URL attribute</caption>
+            <category>Data source</category>
+            <description>The attribute holding the image urls. Overwrites url generation from System.Image</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
         </property>
         <!--Appearance-->
         <property key="editable" type="enumeration" defaultValue="default">
@@ -91,14 +103,14 @@
         </property>
         <property key="openPageAs" type="enumeration" defaultValue="content">
                     <caption>Open page as</caption>
-                    <category>On click action</category>
+                    <category>Events</category>
                     <description/>
                     <enumerationValues>
                         <enumerationValue key="content">Full page</enumerationValue>
                         <enumerationValue key="popup">Popup</enumerationValue>
                         <enumerationValue key="modal">Blocking popup</enumerationValue>
                     </enumerationValues>
-                </property>
+        </property>
     </properties>
 </widget>
 
