@@ -13,12 +13,12 @@ interface WrapperProps {
 
 export interface ImageCropContainerProps extends WrapperProps {
   dataSource: ImageDataSource;
+  dataUrl: string;
   editable: editableType;
   minWidth: number;
   minHeight: number;
   maxWidth: number;
   maxHeight: number;
-  imageUrl?: string;
   onClickMicroflow: string;
   onClickForm: string;
   onClickOption: onClickOptions;
@@ -28,37 +28,47 @@ export interface ImageCropContainerProps extends WrapperProps {
 }
 
 interface ImageCropContainerState {
-  imageUrl?: string;
+  url: string;
 }
 export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
-  state: ImageCropContainerState = {
-    imageUrl: ""
-  };
+
+  constructor(props: ImageCropContainerProps) {
+    super(props);
+    this.state = {
+      url: ""
+    };
+
+    this.convertBase64toBlob = this.convertBase64toBlob.bind(this);
+  }
 
   render() {
     return createElement(ImageCrop, {
-      imageUrl: this.state.imageUrl
+      dataUrl: this.convertBase64toBlob(this.state.url),
+      imageUrl: "https://www.thewrap.com/wp-content/uploads/2018/05/deadpool-2-post-credits-scene.jpg"
     });
   }
 
   componentWillReceiveProps(newProps: ImageCropContainerProps) {
-    this.fetchImage(newProps);
+    this.setState({
+      url: this.getAttributeValue(this.props.dataUrl, newProps.mxObject) as string
+    });
   }
 
-  private fetchImage(newProps: ImageCropContainerProps) {
-    let image = "";
-    const { mxObject } = newProps;
-    if (this.props.dataSource === "static" && mxObject) {
-      image = mx.data.getDocumentUrl(mxObject.getGuid(), mxObject.get("changedDate") as number, true);
+  private getAttributeValue(attributeName: string, mxObject?: mendix.lib.MxObject): string {
+    return mxObject ? mxObject.get(attributeName) as string : "";
+  }
+
+  private convertBase64toBlob(base64Uri: string): Blob {
+    const byteString = atob(base64Uri.split(";base64,")[1]);
+    const bufferArray = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(bufferArray);
+
+    for (let i = 0; i < byteString.length; i++) {
+      uintArray[i] = byteString.charCodeAt(i);
     }
-    const imageUrl = image;
-    if (imageUrl)
-      this.setState({ imageUrl });
-  }
 
-  //     componentWillUnmount() {
-  //     if (this.subscriptionHandle) window.mx.data.unsubscribe(this.subscriptionHandle);
-  // }
+    return new Blob([ bufferArray ], { type: base64Uri.split(":")[0] });
+  }
 
   public static validateProps(props: ImageCropContainerProps): string {
     let message = "";

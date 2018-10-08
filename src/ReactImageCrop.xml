@@ -5,6 +5,14 @@
     <icon/>
      <properties>
        <!--Data source-->
+       <property key="dataUrl" type="attribute" required="false" isPath="optional" pathType="reference">
+            <caption>Data URL</caption>
+            <category>Data source</category>
+            <description>The Data URL attribute. Make sure this is an 'Unlimited String'! The signature is stored here as a Base64 encoded PNG image.</description>
+            <attributeTypes>
+                <attributeType name="String"/>
+            </attributeTypes>
+        </property>
         <property key="dataSource" type="enumeration" defaultValue="static">
             <caption>Data source</caption>
             <category>Data source</category>
