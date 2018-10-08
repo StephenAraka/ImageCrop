@@ -1,14 +1,9 @@
 import { Component, createElement } from "react";
+import "react-image-crop/lib/ReactCrop.scss";
 
 export type editableType = "default" | "never";
 export interface ImageCropProps {
   imageUrl?: string;
-  // editable: editableType;
-  // minWidth: number;
-  // minHeight: number;
-  // maxWidth: number;
-  // maxHeight: number;
-
 }
 
 class ImageCrop extends Component<ImageCropProps, {}> {
