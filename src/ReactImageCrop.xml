@@ -5,39 +5,10 @@
     <icon/>
      <properties>
        <!--Data source-->
-       <property key="dataUrl" type="attribute" required="false" isPath="optional" pathType="reference">
-            <caption>Data URL</caption>
-            <category>Data source</category>
-            <description>The Data URL attribute. Make sure this is an 'Unlimited String'! The signature is stored here as a Base64 encoded PNG image.</description>
-            <attributeTypes>
-                <attributeType name="String"/>
-            </attributeTypes>
-        </property>
-        <property key="dataSource" type="enumeration" defaultValue="static">
-            <caption>Data source</caption>
-            <category>Data source</category>
-            <description>Where the images should be retrieved from</description>
-            <enumerationValues>
-                <enumerationValue key="static">Database</enumerationValue>
-                <enumerationValue key="xpath">X-Path</enumerationValue>
-                <enumerationValue key="microflow">Microflow</enumerationValue>
-            </enumerationValues>
-        </property>
-        <property key="imagesEntity" type="entity" required="false">
+       <property key="imagesEntity" type="entity" required="false">
             <caption>Images entity</caption>
             <category>Data source</category>
             <description>The entity from which the images will be retrieved. Should extend System.Image or provide a url attribute.</description>
-        </property>
-        <property key="entityConstraint" type="entityConstraint" entityProperty="imagesEntity" required="false">
-            <caption>XPath</caption>
-            <category>Data source</category>
-            <description>Constraint on the images entity</description>
-        </property>
-        <property key="dataSourceMicroflow" type="microflow" required="false">
-            <caption>Microflow</caption>
-            <category>Data source</category>
-            <description>Returns the images to display</description>
-            <returnType type="Object" entityProperty="imagesEntity" isList="true"/>
         </property>
         <property key="urlAttribute" type="attribute" required="false" entityProperty="imagesEntity">
             <caption>URL attribute</caption>

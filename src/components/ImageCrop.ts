@@ -1,38 +1,55 @@
 import { Component, createElement } from "react";
-import * as ReactCrop from "react-image-crop";
+// import * as ReactCrop from "react-image-crop";
+import ReactCrop from "react-image-crop";
+
 import "react-image-crop/lib/ReactCrop.scss";
 
-export type editableType = "default" | "never";
-export interface ImageCropProps {
-  imageUrl: string;
-  dataUrl: Blob;
-
-  // editable: editableType;
-  // minWidth: number;
-  // minHeight: number;
-  // maxWidth: number;
-  // maxHeight: number;
-
+interface PixelCrop {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
-const crop = {
-  x: 20,
-  y: 10,
-  width: 30,
-  height: 10
-};
+interface Crop {
+  aspect?: number;
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+}
+export interface ImageCropProps {
+  imageUrl: string;
+  onChange?: (crop?: Crop, pixelCrop?: PixelCrop) => void;
+}
 
-class ImageCrop extends Component<ImageCropProps, {}> {
+interface ImageCropState {
+  crop: Crop;
+  pixelCrop: PixelCrop;
+}
+
+class ImageCrop extends Component<ImageCropProps, ImageCropState> {
+
+  constructor(props: ImageCropProps) {
+    super(props);
+    this.state = {
+      crop: { x: 100, y: 100, width: 100, height: 100 },
+      pixelCrop: {  x: 100, y: 100, width: 100, height: 100 }
+    };
+}
   render() {
-      return createElement("div", { className: "react-image-wrapper" },
-        // tslint:disable-next-line:no-console
-        createElement(ReactCrop, { src: this.props.imageUrl, onChange: () => console.log("changed") })
-        );
+    return createElement("div", { className: "react-image-wrapper" },
+      createElement(ReactCrop, {
+        crop: this.state.crop,
+        src: this.props.imageUrl,
+        onChange: this.onCropChange
+      })
+    );
   }
 
-  // private getImageUrl() {
-  //   return URL.createObjectURL(this.props.base64toBlob);
-  // }
+  onCropChange = (crop: Crop, _pixelCrop: PixelCrop) => {
+    this.setState({ crop });
+  }
 }
 
 export default ImageCrop;

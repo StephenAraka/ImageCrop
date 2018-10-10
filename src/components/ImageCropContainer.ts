@@ -4,7 +4,6 @@ import ImageCrop from "./ImageCrop";
 type editableType = "default" | "never";
 type onClickOptions = "doNothing" | "callMicroflow" | "showPage" | "openFullScreen";
 type PageLocation = "content" | "popup" | "modal";
-type ImageDataSource = "static" | "XPath" | "microflow";
 interface WrapperProps {
   mxObject: mendix.lib.MxObject;
   mxform?: mxui.lib.form._FormBase;
@@ -12,13 +11,13 @@ interface WrapperProps {
 }
 
 export interface ImageCropContainerProps extends WrapperProps {
-  dataSource: ImageDataSource;
-  dataUrl: string;
+  dataSourceMicroflow: string;
   editable: editableType;
   minWidth: number;
   minHeight: number;
   maxWidth: number;
   maxHeight: number;
+  imageUrl: string;
   onClickMicroflow: string;
   onClickForm: string;
   onClickOption: onClickOptions;
@@ -28,60 +27,29 @@ export interface ImageCropContainerProps extends WrapperProps {
 }
 
 interface ImageCropContainerState {
-  url: string;
+  alertMessage?: string;
+  imageUrl: string;
 }
 export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
-
-  constructor(props: ImageCropContainerProps) {
-    super(props);
-    this.state = {
-      url: ""
-    };
-
-    this.convertBase64toBlob = this.convertBase64toBlob.bind(this);
-  }
+  state: ImageCropContainerState = {
+    imageUrl: ""
+  };
 
   render() {
-    return createElement(ImageCrop, {
-      dataUrl: this.convertBase64toBlob(this.state.url),
-      imageUrl: "https://www.thewrap.com/wp-content/uploads/2018/05/deadpool-2-post-credits-scene.jpg"
-    });
+    return createElement(ImageCrop, { imageUrl: this.state.imageUrl });
+  }
+
+  componentDidMount() {
+    this.fetchImage(this.props.mxObject);
   }
 
   componentWillReceiveProps(newProps: ImageCropContainerProps) {
-    this.setState({
-      url: this.getAttributeValue(this.props.dataUrl, newProps.mxObject) as string
-    });
+    this.fetchImage(newProps.mxObject);
   }
 
-  private getAttributeValue(attributeName: string, mxObject?: mendix.lib.MxObject): string {
-    return mxObject ? mxObject.get(attributeName) as string : "";
-  }
-
-  private convertBase64toBlob(base64Uri: string): Blob {
-    const byteString = atob(base64Uri.split(";base64,")[1]);
-    const bufferArray = new ArrayBuffer(byteString.length);
-    const uintArray = new Uint8Array(bufferArray);
-
-    for (let i = 0; i < byteString.length; i++) {
-      uintArray[i] = byteString.charCodeAt(i);
+  private fetchImage(mxObject: mendix.lib.MxObject) {
+    if (mxObject) {
+      this.setState({ imageUrl: mx.data.getDocumentUrl(mxObject.getGuid(), mxObject.get("changedDate") as number, false) });
     }
-
-    return new Blob([ bufferArray ], { type: base64Uri.split(":")[0] });
-  }
-
-  public static validateProps(props: ImageCropContainerProps): string {
-    let message = "";
-    if (props.dataSource === "static" && !props.staticImages) {
-      message = "For the data source option 'Static', at least one static image should be added";
-    }
-    if (props.dataSource === "XPath" && !props.dataSource) {
-      message = "For the data source 'XPath', the images entity is required";
-    }
-    if (props.dataSource === "microflow" && !props.onClickMicroflow) {
-      message = "For data source option 'microflow', a data source microflow is required";
-    }
-
-    return message;
   }
 }
