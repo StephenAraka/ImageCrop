@@ -4,24 +4,22 @@
     <description>Sample description</description>
     <icon/>
      <properties>
-       <!--Data source-->
        <property key="imagesEntity" type="entity" required="false">
             <caption>Images entity</caption>
             <category>Data source</category>
-            <description>The entity from which the images will be retrieved. Should extend System.Image or provide a url attribute.</description>
+            <description>The entity containing rendered images. Note: Should extend 'System.Image'</description>
         </property>
-        <property key="urlAttribute" type="attribute" required="false" entityProperty="imagesEntity">
+        <!-- <property key="urlAttribute" type="attribute" required="false" entityProperty="imagesEntity">
             <caption>URL attribute</caption>
             <category>Data source</category>
             <description>The attribute holding the image urls. Overwrites url generation from System.Image</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>
-        </property>
-        <!--Appearance-->
+        </property> -->
         <property key="editable" type="enumeration" defaultValue="default">
             <caption>Editable</caption>
-            <category>Appearance</category>
+            <category>Cropping</category>
             <description/>
             <enumerationValues>
                 <enumerationValue key="default">Default</enumerationValue>
@@ -30,34 +28,33 @@
         </property>
         <property key="minWidth" type="integer" defaultValue="100">
             <caption>Minimum width</caption>
-            <category>Appearance</category>
-            <description></description>
+            <category>Cropping</category>
+            <description/>
         </property>
         <property key="minHeight" type="integer" defaultValue="100">
             <caption>Minimum height</caption>
-            <category>Appearance</category>
-            <description></description>
+            <category>Cropping</category>
+            <description/>
         </property>
         <property key="maxWidth" type="integer" defaultValue="700">
             <caption>Maximum width</caption>
-            <category>Appearance</category>
-            <description></description>
+            <category>Cropping</category>
+            <description/>
         </property>
         <property key="maxHeight" type="integer" defaultValue="700">
             <caption>Maximum height</caption>
-            <category>Appearance</category>
-            <description></description>
+            <category>Cropping</category>
+            <description/>
         </property>
         <property key="keepSelection" type="enumeration" defaultValue="true">
             <caption>Keep Selection</caption>
-            <category>Appearance</category>
+            <category>Cropping</category>
             <description>Choose whether to keep focus if user clicks outside the selection area</description>
             <enumerationValues>
                 <enumerationValue key="true">Yes</enumerationValue>
                 <enumerationValue key="false">No</enumerationValue>
             </enumerationValues>
         </property>
-        <!--Events-->
         <property key="onClickOption" type="enumeration" defaultValue="doNothing">
             <caption>On click</caption>
             <category>Events</category>
@@ -81,14 +78,14 @@
             <description>The page to open when an image is clicked</description>
         </property>
         <property key="openPageAs" type="enumeration" defaultValue="content">
-                    <caption>Open page as</caption>
-                    <category>Events</category>
-                    <description/>
-                    <enumerationValues>
-                        <enumerationValue key="content">Full page</enumerationValue>
-                        <enumerationValue key="popup">Popup</enumerationValue>
-                        <enumerationValue key="modal">Blocking popup</enumerationValue>
-                    </enumerationValues>
+            <caption>Open page as</caption>
+            <category>Events</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="content">Full page</enumerationValue>
+                <enumerationValue key="popup">Popup</enumerationValue>
+                <enumerationValue key="modal">Blocking popup</enumerationValue>
+            </enumerationValues>
         </property>
     </properties>
 </widget>

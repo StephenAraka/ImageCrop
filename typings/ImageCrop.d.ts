@@ -1,7 +1,4 @@
 declare module "react-image-crop" {
-
-
-
     interface PixelCrop {
         x: number;
         y: number;
@@ -18,6 +15,7 @@ declare module "react-image-crop" {
     }
 
     function makeAspectCrop(crop: Crop, imageAspect: number): Crop;
+
     export interface ReactCropProps {
         src: string;
         crop?: Crop;
