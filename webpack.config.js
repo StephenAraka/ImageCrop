@@ -1,11 +1,10 @@
-const path = require("path");
 const webpack = require("webpack");
+const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
-const package = require("./package");
-const widgetName = package.widgetName;
-const name = package.widgetName.toLowerCase();
+const pkg = require("./package");
+const widgetName = pkg.widgetName;
+const name = pkg.widgetName.toLowerCase();
 
 const widgetConfig = {
     entry: `./src/components/${widgetName}Container.ts`,
@@ -13,13 +12,6 @@ const widgetConfig = {
         path: path.resolve(__dirname, "dist/tmp"),
         filename: `src/com/mendix/widget/custom/${name}/${widgetName}.js`,
         libraryTarget: "umd"
-    },
-    devServer: {
-        port: 3000,
-        proxy: [ {
-            context: [ "**", `!/com/mendix/widget/custom/${name}/${widgetName}.js` ],
-            target: "http://localhost:8080"
-        } ]
     },
     resolve: {
         extensions: [ ".ts", ".js" ],
@@ -29,40 +21,27 @@ const widgetConfig = {
     },
     module: {
         rules: [
-            {
-                test: /\.(ts|tsx)?$/,
+            { test: /\.ts$/, loader: "ts-loader" },
+            { test: /\.css$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
+                use: "css-loader"
+            }) },
+            { test: /\.scss$/, loader: ExtractTextPlugin.extract({
+                fallback: "style-loader",
                 use: [
-                    {
-                        loader: "ts-loader"
-                    }
+                    { loader: "css-loader" },
+                    { loader: "sass-loader" }
                 ]
-            },
-            { test: /\.(css|scss)$/,use: [
-                "raw-loader", "css-loader", "sass-loader"
-            ] },
-            { test: /\.png$/, loader: "url-loader?limit=100000" },
-            { test: /\.jpg$/, loader: "file-loader" },
-            { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream" },
-            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader" },
-            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml" }
+            }) }
         ]
     },
-    devtool: "source-map",
     mode: "development",
+    devtool: "source-map",
     externals: [ "react", "react-dom" ],
     plugins: [
-        new CopyWebpackPlugin([ {
-            from: "src/**/*.xml"
-        } ], {
-            copyUnmodified: true
-        }),
-        new ExtractTextPlugin({
-            filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css`
-        }),
-        new webpack.LoaderOptionsPlugin({
-            debug: true
-        })
+        new CopyWebpackPlugin([ { from: "src/**/*.xml" }], { copyUnmodified: true }),
+        new ExtractTextPlugin({ filename: `./src/com/mendix/widget/custom/${name}/ui/${widgetName}.css` }),
+        new webpack.LoaderOptionsPlugin({ debug: true })
     ]
 };
 
@@ -77,29 +56,16 @@ const previewConfig = {
         extensions: [ ".ts", ".js" ]
     },
     module: {
-        rules: [ {
-                test: /\.(ts|tsx)?$/,
-                use: [
-                    {
-                        loader: "ts-loader"
-                    }
-                ]
-            }, {
-                test: /\.css$/,
-                use: "raw-loader"
-            },
-            {
-                test: /\.scss$/,
-                use: [ "raw-loader", "sass-loader" ]
-            }
+        rules: [
+            { test: /\.ts$/, use: "ts-loader" },
+            { test: /\.scss$/, use: [ "raw-loader", "sass-loader" ]},
+            { test: /\.css$/, use: "css-loader" },
         ]
     },
-    mode: "development",
+    mode: "production",
     devtool: "inline-source-map",
     externals: [ "react", "react-dom" ],
-    plugins: [
-      new webpack.LoaderOptionsPlugin({ debug: true })
-    ]
+    plugins: [ new webpack.LoaderOptionsPlugin({ debug: true }) ]
 };
 
-module.exports = [ widgetConfig, previewConfig ];
+module.exports = [ widgetConfig, previewConfig];

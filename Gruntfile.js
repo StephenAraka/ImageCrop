@@ -1,11 +1,7 @@
 "use strict";
+const webpack = require("webpack");
 const webpackConfig = require("./webpack.config");
 const merge = require("webpack-merge");
-
-const packageJson = require("./package.json");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const widgetName = packageJson.widgetName;
-const name = packageJson.widgetName.toLowerCase();
 
 const webpackConfigRelease = webpackConfig.map(config => merge(config, {
     devtool: false,
@@ -14,14 +10,6 @@ const webpackConfigRelease = webpackConfig.map(config => merge(config, {
         minimize: true
     }
 }));
-webpackConfigRelease[0].plugins.push(new ExtractTextPlugin({
-    filename: `./com/mendix/widget/custom/${name}/ui/${widgetName}.css`
-}));
-webpackConfigRelease[0].module.rules[1] = { test: /\.css$/, loader: ExtractTextPlugin.extract({
-        fallback: "style-loader",
-        use: [ "css-loader", "sass-loader" ]
-    })
-};
 
 module.exports = function(grunt) {
     const pkg = grunt.file.readJSON("package.json");
@@ -30,7 +18,7 @@ module.exports = function(grunt) {
         watch: {
             updateWidgetFiles: {
                 files: [ "./src/**/*" ],
-                tasks: [ "webpack:develop", "file_append", "compress", "copy" ],
+                tasks: [ "webpack:develop", "file_append", "compress:dist", "copy" ],
                 options: {
                     debounceDelay: 250
                 }
