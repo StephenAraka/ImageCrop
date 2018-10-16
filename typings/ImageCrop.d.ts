@@ -19,6 +19,7 @@ declare module "react-image-crop" {
     export interface ReactCropProps {
         src: string;
         crop?: Crop;
+        className?: string;
         onChange?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onComplete?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onImageLoaded?: (target: HTMLImageElement) => void;

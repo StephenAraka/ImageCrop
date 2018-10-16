@@ -49,7 +49,11 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
   private fetchImage(mxObject: mendix.lib.MxObject) {
     if (mxObject) {
-      this.setState({ imageUrl: mx.data.getDocumentUrl(mxObject.getGuid(), mxObject.get("changedDate") as number, false) });
+        const url = mx.data.getDocumentUrl(mxObject.getGuid(), mxObject.get("changedDate") as number);
+        mx.data.getImageUrl(url,
+            objectUrl => {
+                this.setState({ imageUrl: objectUrl });
+            });
     }
   }
 }

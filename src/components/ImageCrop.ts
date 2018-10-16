@@ -24,65 +24,48 @@ export interface ImageCropProps {
 
 interface ImageCropState {
     crop: Crop;
-    pixelCrop: PixelCrop;
-    maxHeight: number;
-    disabled: boolean;
+    // pixelCrop: PixelCrop;
+    // disabled: boolean;
 }
 
-class ImageCrop extends Component<ImageCropProps, ImageCropState> {
+export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
 
     constructor(props: ImageCropProps) {
         super(props);
         this.state = {
-            crop: { x: 10, y: 10, width: 80, height: 80 },
-            pixelCrop: { x: 100, y: 100, width: 100, height: 100 },
-            maxHeight: 80,
-            disabled: true
+            crop: {
+                x: 20,
+                y: 10,
+                width: 40,
+                aspect: 16 / 9
+            }
         };
     }
     render() {
-        return createElement("div",
-            { className: "react-image-wrapper" },
+        return createElement("div", { className: "react-image-wrapper" },
             createElement(ReactCrop, {
+                className: "",
                 crop: this.state.crop,
                 src: this.props.imageUrl,
                 onChange: this.onCropChange,
                 onImageLoaded: this.onImageLoaded,
-                onComplete: this.onCropComplete
+                onComplete: () => this.onCropComplete
             })
-            // createElement("input", { type: "button", value: "CropOFF", onClick: this.onButtonClick }),
-            // createElement("input", { type: "button", value: "CropON", onClick: this.onButtonClick2 })
         );
     }
 
-    onButtonClick = () => {
-        this.setState({
-            crop: {
-                x: 20,
-                y: 5,
-                aspect: 1,
-                height: 50
-            },
-            disabled: true
-        });
-    }
-
-    onButtonClick2 = () => {
-        this.setState({
-            crop: {
-                x: 20,
-                y: 5,
-                height: 20,
-                width: 30
-            },
-            disabled: false
-        });
-    }
-
-    private onImageLoaded = () => {
-        console.log("onImageloaded", this.props.imageUrl); // tslint:disable-line
-    }
-
+    private onImageLoaded = (image?: any, pixelCrop?: any) => {
+        console.log("onImageLoaded", { image, pixelCrop }); // tslint:disable-line
+        // this.setState({
+        //   crop: makeAspectCrop({
+        //     x: 0,
+        //     y: 0,
+        //     aspect: 10 / 4,
+        //     width: 50,
+        //   }, image.naturalWidth / image.naturalHeight),
+        //   image,
+        // });
+      }
     private onCropComplete = (crop: Crop) => {
         console.log("onCropComplete", crop); // tslint:disable-line
     }
@@ -90,6 +73,7 @@ class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     private onCropChange = (crop: Crop) => {
         this.setState({ crop });
     }
+
 }
 
 export default ImageCrop;

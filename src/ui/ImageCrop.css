@@ -1,5 +1,12 @@
 .widget-reactimagecrop-clickable {
   cursor: pointer;
 }
+.zzz{
+    width: 100%;
+    height: 80%;
+}
 
-
+.react-image-wrapper {
+    width: 100px;
+    height: 100px;
+}
