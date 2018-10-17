@@ -1,16 +1,17 @@
 import { Component, createElement } from "react";
+// import ReactDOM from "react-dom";
 import ReactCrop from "react-image-crop";
-import "react-image-crop/lib/ReactCrop.scss";
+import "react-image-crop/dist/ReactCrop.css";
 import "../ui/ImageCrop.css";
 
-interface PixelCrop {
+export interface PixelCrop {
     x: number;
     y: number;
     width: number;
     height: number;
 }
 
-interface Crop {
+export interface Crop {
     aspect?: number;
     x: number;
     y: number;
@@ -19,14 +20,10 @@ interface Crop {
 }
 export interface ImageCropProps {
     imageUrl: string;
-    onChange?: (crop?: Crop, pixelCrop?: PixelCrop) => void;
 }
 
-interface ImageCropState {
+export interface ImageCropState {
     crop: Crop;
-    pixelCrop: PixelCrop;
-    maxHeight: number;
-    disabled: boolean;
 }
 
 class ImageCrop extends Component<ImageCropProps, ImageCropState> {
@@ -34,62 +31,35 @@ class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     constructor(props: ImageCropProps) {
         super(props);
         this.state = {
-            crop: { x: 10, y: 10, width: 80, height: 80 },
-            pixelCrop: { x: 100, y: 100, width: 100, height: 100 },
-            maxHeight: 80,
-            disabled: true
+            crop: {
+                x: 100,
+                y: 100,
+                width: 800,
+                aspect: 16 / 9
+            }
         };
     }
+
     render() {
         return createElement("div",
-            { className: "react-image-wrapper" },
+            { className: "react-crop-wrapper" },
             createElement(ReactCrop, {
+                className: "react-crop",
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                onChange: this.onCropChange,
-                onImageLoaded: this.onImageLoaded,
-                onComplete: this.onCropComplete
+                onComplete: this.onComplete,
+                onChange: this.onChange
             })
-            // createElement("input", { type: "button", value: "CropOFF", onClick: this.onButtonClick }),
-            // createElement("input", { type: "button", value: "CropON", onClick: this.onButtonClick2 })
         );
     }
 
-    onButtonClick = () => {
-        this.setState({
-            crop: {
-                x: 20,
-                y: 5,
-                aspect: 1,
-                height: 50
-            },
-            disabled: true
-        });
-    }
-
-    onButtonClick2 = () => {
-        this.setState({
-            crop: {
-                x: 20,
-                y: 5,
-                height: 20,
-                width: 30
-            },
-            disabled: false
-        });
-    }
-
-    private onImageLoaded = () => {
-        console.log("onImageloaded", this.props.imageUrl); // tslint:disable-line
-    }
-
-    private onCropComplete = (crop: Crop) => {
-        console.log("onCropComplete", crop); // tslint:disable-line
-    }
-
-    private onCropChange = (crop: Crop) => {
+    private onChange = (crop: Crop) => {
         this.setState({ crop });
     }
+
+    private onComplete = (_crop: Crop, _pixelCrop: PixelCrop) => {
+        console.log("onCropComplete"); // tslint:disable-line
+      }
 }
 
 export default ImageCrop;
