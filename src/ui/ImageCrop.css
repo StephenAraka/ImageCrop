@@ -3,12 +3,6 @@
 }
 .react-crop-wrapper {
   max-width: none;
-  width: 80%;
-  height: 50%;
-  background-color: #fff;
-}
-.react-crop {
   width: 500px;
   height: 500px;
-  background-color: #fff;
 }

@@ -24,20 +24,26 @@ export interface ImageCropProps {
 
 export interface ImageCropState {
     crop: Crop;
+    src: string;
+    img: string;
 }
 
-class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-
+export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
+    ourImage!: HTMLImageElement;
+    image!: HTMLImageElement;
+    // private canvasNode!: HTMLCanvasElement;
     constructor(props: ImageCropProps) {
         super(props);
         this.state = {
             crop: {
-                x: 100,
-                y: 100,
-                width: 800,
-                aspect: 16 / 9
-            }
+                x: 20,
+                y: 10,
+                width: 400
+            },
+            src: this.props.imageUrl,
+            img: ""
         };
+
     }
 
     render() {
@@ -48,18 +54,75 @@ class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 crop: this.state.crop,
                 src: this.props.imageUrl,
                 onComplete: this.onComplete,
-                onChange: this.onChange
-            })
+                onChange: this.onChange,
+                onImageLoaded: this.onImageLoaded
+            }),
+            createElement("img", { src: this.state.img })
         );
     }
 
     private onChange = (crop: Crop) => {
         this.setState({ crop });
+        const reader = new FileReader();
+        reader.onload = () => {
+            this.setState({ src: reader.result as string });
+        };
+        return createElement("img", { src: this.state.src });
     }
 
-    private onComplete = (_crop: Crop, _pixelCrop: PixelCrop) => {
-        console.log("onCropComplete"); // tslint:disable-line
-      }
+    private onComplete = (crop: Crop, pixelCrop: PixelCrop) => {
+        window.alert("onCropComplete" + { crop, pixelCrop });
+        this.image = this.convertCanvasToImage(pixelCrop);
+        console.log(this.image);
+        this.setState({ img: this.image.src });
+    }
+
+    private onImageLoaded = (target: HTMLImageElement) => {
+        this.ourImage = target;
+        console.log(target);
+    }
+
+    // {File} image - Image File Object
+    // {Object} pixelCrop - pixelCrop Object provided by react-image-crop
+    // {String} fileName - Name of the returned file in Promise
+    getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName: string) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = pixelCrop.width;
+        canvas.height = pixelCrop.height;
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+            ctx.drawImage(
+                image,
+                pixelCrop.x,
+                pixelCrop.y,
+                pixelCrop.width,
+                pixelCrop.height,
+                0,
+                0,
+                pixelCrop.width,
+                pixelCrop.height
+            );
+        }
+        return canvas;
+
+        // As Base64 string
+        // const base64Image = canvas.toDataURL('image/jpeg');
+        // As a blob
+        // return new Promise((resolve) => {
+        //     canvas.toBlob(file => {
+        //         if (file) {
+        //             // file.name = fileName;
+        //             resolve(file);
+        //         }
+        //     }, "image/jpeg");
+        // });
+    }
+
+    convertCanvasToImage = (pixelCrop: PixelCrop) => {
+    const image3: HTMLImageElement = new Image();
+    image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
+    return image3;
+}
 }
 
 export default ImageCrop;
