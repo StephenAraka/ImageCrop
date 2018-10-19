@@ -11,13 +11,13 @@ export interface WrapperProps {
 }
 
 export interface ImageCropContainerProps extends WrapperProps {
+  dataUrl?: string;
   dataSourceMicroflow: string;
   editable: editableType;
   minWidth: number;
   minHeight: number;
   maxWidth: number;
   maxHeight: number;
-  imageUrl: string;
   onClickMicroflow: string;
   onClickForm: string;
   onClickOption: onClickOptions;
@@ -34,7 +34,12 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
   };
 
   render() {
-    return createElement(ImageCrop, { imageUrl: this.state.imageUrl });
+    return createElement(ImageCrop, {
+      ...this.props as ImageCropContainerProps,
+      imageUrl: this.state.imageUrl,
+      onClickAction: this.saveImage,
+      alertMessage: this.state.alertMessage
+     } as any);
   }
 
   componentDidMount() {
@@ -43,6 +48,9 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
   componentWillReceiveProps(newProps: ImageCropContainerProps) {
     this.fetchImage(newProps.mxObject);
+    if (this.props.dataUrl) {
+    this.setState({ imageUrl: this.getAttributeValue(this.props.dataUrl, newProps.mxObject) });
+    }
   }
 
   private fetchImage(mxObject: mendix.lib.MxObject) {
@@ -54,4 +62,36 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
         });
     }
   }
+
+  private getAttributeValue(attributeName: string, mxObject?: mendix.lib.MxObject): string {
+    return mxObject ? mxObject.get(attributeName) as string : "";
+}
+
+  private saveImage = (url: string) => {
+    const { mxObject, dataUrl } = this.props;
+    if (mxObject && mxObject.inheritsFrom("System.Image") && dataUrl) {
+      mx.data.saveDocument(
+        mxObject.getGuid(),
+        `${Math.floor(Math.random() * 1000000)}.png`,
+        { },
+        this.base64toBlob(url),
+        () => { mx.ui.info("Cropped image has been saved", false); },
+        error => { mx.ui.error(error.message, false); }
+      );
+    } else {
+      this.setState({ alertMessage: "The entity does not inherit from System.Image" });
+    }
+  }
+
+  private base64toBlob = (base64Uri: string): Blob => {
+    const byteString = atob(base64Uri.split(";base64,")[1]);
+    const bufferArray = new ArrayBuffer(byteString.length);
+    const uintArray = new Uint8Array(bufferArray);
+
+    for (let i = 0; i < byteString.length; i++) {
+        uintArray[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ bufferArray ], { type: base64Uri.split(":")[0] });
+}
 }

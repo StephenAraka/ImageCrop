@@ -20,6 +20,7 @@ export interface Crop {
 }
 export interface ImageCropProps {
     imageUrl: string;
+    onClickAction(imageUrl?: string): void;
 }
 
 export interface ImageCropState {
@@ -30,8 +31,6 @@ export interface ImageCropState {
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     ourImage!: HTMLImageElement;
-    image!: HTMLImageElement;
-    // private canvasNode!: HTMLCanvasElement;
     constructor(props: ImageCropProps) {
         super(props);
         this.state = {
@@ -57,8 +56,15 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
             }),
-            createElement("img", { src: this.state.img })
-        );
+            createElement("img", { src: this.state.img }),
+            createElement("button", { className: "btn btn-primary", onClick: this.handleClick }, "Crop"));
+    }
+
+    private handleClick = (pixelCrop: PixelCrop, imagedataUrl?: string) => {
+        // imagedataUrl = this.(pixelCrop); ---------------------- TODO: work on this
+        if (this.props.onClickAction) {
+            this.props.onClickAction(imagedataUrl);
+        }
     }
 
     private onChange = (crop: Crop) => {
@@ -70,59 +76,45 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         return createElement("img", { src: this.state.src });
     }
 
-    private onComplete = (crop: Crop, pixelCrop: PixelCrop) => {
-        window.alert("onCropComplete" + { crop, pixelCrop });
-        this.image = this.convertCanvasToImage(pixelCrop);
-        console.log(this.image);
-        this.setState({ img: this.image.src });
+    private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
+        // this.setState({ img: this.convertCanvasToImage(pixelCrop) as string }); ---------------------- TODO: work on this
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
         this.ourImage = target;
-        console.log(target);
     }
 
     // {File} image - Image File Object
     // {Object} pixelCrop - pixelCrop Object provided by react-image-crop
     // {String} fileName - Name of the returned file in Promise
-    getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName: string) => {
+    private getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName?: string) => {
         const canvas = document.createElement("canvas");
         canvas.width = pixelCrop.width;
         canvas.height = pixelCrop.height;
         const ctx = canvas.getContext("2d");
         if (ctx) {
-            ctx.drawImage(
-                image,
-                pixelCrop.x,
-                pixelCrop.y,
-                pixelCrop.width,
-                pixelCrop.height,
-                0,
-                0,
-                pixelCrop.width,
-                pixelCrop.height
-            );
+            if (pixelCrop) {
+                ctx.drawImage(
+                    image,
+                    pixelCrop.x,
+                    pixelCrop.y,
+                    pixelCrop.width,
+                    pixelCrop.height,
+                    0,
+                    0,
+                    pixelCrop.width,
+                    pixelCrop.height
+                );
+            }
         }
-        return canvas;
-
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg');
-        // As a blob
-        // return new Promise((resolve) => {
-        //     canvas.toBlob(file => {
-        //         if (file) {
-        //             // file.name = fileName;
-        //             resolve(file);
-        //         }
-        //     }, "image/jpeg");
-        // });
+        return canvas.toBlob(
+            (canvasDataBlob) => {
+                image = new Image();
+                const url = window.URL.createObjectURL(canvasDataBlob);
+                image.src = url;
+            }
+        );
     }
-
-    convertCanvasToImage = (pixelCrop: PixelCrop) => {
-    const image3: HTMLImageElement = new Image();
-    image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
-    return image3;
-}
 }
 
 export default ImageCrop;

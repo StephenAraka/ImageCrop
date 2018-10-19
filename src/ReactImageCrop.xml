@@ -9,14 +9,14 @@
             <category>Data source</category>
             <description>The entity containing rendered images. Note: Should extend 'System.Image'</description>
         </property>
-        <!-- <property key="urlAttribute" type="attribute" required="false" entityProperty="imagesEntity">
-            <caption>URL attribute</caption>
+        <property key="dataUrl" type="attribute" required="false" isPath="optional" pathType="reference">
+            <caption>Data URL</caption>
             <category>Data source</category>
-            <description>The attribute holding the image urls. Overwrites url generation from System.Image</description>
+            <description>The Data URL attribute. Make sure this is an 'Unlimited String'! The signature is stored here as a Base64 encoded PNG image.</description>
             <attributeTypes>
                 <attributeType name="String"/>
             </attributeTypes>
-        </property> -->
+        </property>
         <property key="editable" type="enumeration" defaultValue="default">
             <caption>Editable</caption>
             <category>Cropping</category>
