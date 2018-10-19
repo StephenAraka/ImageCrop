@@ -29,8 +29,8 @@ export interface ImageCropState {
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-    ourImage!: HTMLImageElement;
-    image!: HTMLImageElement;
+    private image: HTMLImageElement;
+    private ourImage: HTMLImageElement;
     // private canvasNode!: HTMLCanvasElement;
     constructor(props: ImageCropProps) {
         super(props);
@@ -53,7 +53,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 className: "react-crop",
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                onComplete: this.onComplete,
+                onDragEnd: this.DragCrop,
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
             }),
@@ -70,15 +70,19 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         return createElement("img", { src: this.state.src });
     }
 
-    private onComplete = (crop: Crop, pixelCrop: PixelCrop) => {
-        window.alert("onCropComplete" + { crop, pixelCrop });
-        this.image = this.convertCanvasToImage(pixelCrop);
-        console.log(this.image);
-        this.setState({ img: this.image.src });
+    private DragCrop = (crop: Crop, pixelCrop: PixelCrop) => {
+        if (onmousedown) {
+      this.convertCanvasToImage(pixelCrop);
+        } else {
+            window.alert("onDrag" + { crop, pixelCrop });
+            this.image = this.convertCanvasToImage(pixelCrop);
+            this.setState({ img: this.image.src });
+        }
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
         this.ourImage = target;
+        // tslint:disable-next-line:no-console
         console.log(target);
     }
 
@@ -104,18 +108,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             );
         }
         return canvas;
-
-        // As Base64 string
-        // const base64Image = canvas.toDataURL('image/jpeg');
-        // As a blob
-        // return new Promise((resolve) => {
-        //     canvas.toBlob(file => {
-        //         if (file) {
-        //             // file.name = fileName;
-        //             resolve(file);
-        //         }
-        //     }, "image/jpeg");
-        // });
     }
 
     convertCanvasToImage = (pixelCrop: PixelCrop) => {
@@ -123,6 +115,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
     return image3;
 }
+
 }
 
 export default ImageCrop;

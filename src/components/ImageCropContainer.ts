@@ -39,6 +39,7 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
   componentDidMount() {
     this.fetchImage(this.props.mxObject);
+
   }
 
   componentWillReceiveProps(newProps: ImageCropContainerProps) {
