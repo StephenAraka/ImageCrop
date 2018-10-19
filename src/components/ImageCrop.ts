@@ -52,7 +52,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 className: "react-crop",
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                onComplete: this.onComplete,
+                // onDragEnd: this.DragCrop,// ---------------------- TODO: work on this
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
             }),
