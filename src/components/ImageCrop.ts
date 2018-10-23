@@ -1,5 +1,4 @@
 import { Component, createElement } from "react";
-// import ReactDOM from "react-dom";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import "../ui/ImageCrop.css";
@@ -19,13 +18,16 @@ export interface Crop {
     height?: number;
 }
 export interface ImageCropProps {
+    minWidth: number;
+    minHeight: number;
+    maxWidth: number;
+    maxHeight: number;
     imageUrl: string;
     onClickAction(imageUrl?: string): void;
 }
 
 export interface ImageCropState {
     crop: Crop;
-    src: string;
     img: string;
 }
 
@@ -39,7 +41,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 y: 10,
                 width: 400
             },
-            src: this.props.imageUrl,
             img: ""
         };
 
@@ -50,38 +51,31 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             { className: "react-crop-wrapper" },
             createElement(ReactCrop, {
                 className: "react-crop",
+                minWidth: this.props.minWidth,
+                minHeight: this.props.minHeight,
+                maxWidth: this.props.maxWidth,
+                maxHeight: this.props.maxHeight,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
                 onComplete: this.onComplete,
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
-            }),
-            createElement("img", { src: this.state.img }),
-            createElement("button", { className: "btn btn-primary", onClick: this.handleClick }, "Crop"));
-    }
-
-    private handleClick = (pixelCrop: PixelCrop, imagedataUrl?: string) => {
-        // imagedataUrl = this.(pixelCrop); ---------------------- TODO: work on this
-        if (this.props.onClickAction) {
-            this.props.onClickAction(imagedataUrl);
-        }
-    }
-
-    private onChange = (crop: Crop) => {
-        this.setState({ crop });
-        const reader = new FileReader();
-        reader.onload = () => {
-            this.setState({ src: reader.result as string });
-        };
-        return createElement("img", { src: this.state.src });
-    }
-
-    private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
-        // this.setState({ img: this.convertCanvasToImage(pixelCrop) as string }); ---------------------- TODO: work on this
+            })
+        );
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
         this.ourImage = target;
+    }
+
+    private onChange = (crop: Crop) => {
+        this.setState({ crop });
+    }
+
+    private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
+        this.setState({ img: this.convertCanvasToImage(pixelCrop) });
+        this.props.onClickAction(this.state.img);
+        this.setState({ img: this.props.imageUrl });
     }
 
     // {File} image - Image File Object
@@ -107,13 +101,13 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 );
             }
         }
-        return canvas.toBlob(
-            (canvasDataBlob) => {
-                image = new Image();
-                const url = window.URL.createObjectURL(canvasDataBlob);
-                image.src = url;
-            }
-        );
+        return canvas;
+    }
+
+    convertCanvasToImage = (pixelCrop: PixelCrop) => {
+        const image3: HTMLImageElement = new Image();
+        image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
+        return image3.src;
     }
 }
 

@@ -26,22 +26,22 @@
                 <enumerationValue key="never">Never</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="minWidth" type="integer" defaultValue="100">
+        <property key="minWidth" type="integer" defaultValue="10">
             <caption>Minimum width</caption>
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="minHeight" type="integer" defaultValue="100">
+        <property key="minHeight" type="integer" defaultValue="10">
             <caption>Minimum height</caption>
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="maxWidth" type="integer" defaultValue="700">
+        <property key="maxWidth" type="integer">
             <caption>Maximum width</caption>
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="maxHeight" type="integer" defaultValue="700">
+        <property key="maxHeight" type="integer">
             <caption>Maximum height</caption>
             <category>Cropping</category>
             <description/>
