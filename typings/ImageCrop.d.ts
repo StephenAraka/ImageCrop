@@ -14,7 +14,7 @@ declare module "react-image-crop" {
         height?: number;
     }
 
-    function makeAspectCrop(crop: Crop, imageAspect: number): Crop;
+    export function makeAspectCrop(crop: Crop, imageAspect: number): Crop;
 
     export interface ReactCropProps {
         src: string;
@@ -25,11 +25,11 @@ declare module "react-image-crop" {
         maxWidth?: number;
         maxHeight?: number;
         keepSelection?: boolean;
-        onChange: (crop: Crop, pixelCrop: PixelCrop) => void;
+        onChange?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onComplete?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onImageLoaded?: (target: HTMLImageElement) => void;
-        onDragStart?: () => void;
-        onDragEnd?: () => void;
+        onDragStart?: (crop: Crop, pixelCrop: PixelCrop) => void;
+        onDragEnd?: (crop: Crop, pixelCrop: PixelCrop) => void;
         disabled?: boolean;
         crossorigin?: string;
         children?: ReactNode;
@@ -38,7 +38,7 @@ declare module "react-image-crop" {
         className?: string;
     }
 
-    export const ReactCrop: React.ComponentClass<ReactCropProps>, makeAspectCrop;
+    export const ReactCrop: React.ComponentClass<ReactCropProps>;
 
     export { ReactCrop as default };
 }
