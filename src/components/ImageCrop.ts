@@ -57,7 +57,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 maxHeight: this.props.maxHeight,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                // onDragEnd: this.DragCrop,// ---------------------- TODO: work on this
+                onComplete: this.onComplete,
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
             })
@@ -75,12 +75,8 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
         this.setState({ img: this.convertCanvasToImage(pixelCrop) });
         this.props.onClickAction(this.state.img);
-        this.setState({ img: this.props.imageUrl });
     }
 
-    // {File} image - Image File Object
-    // {Object} pixelCrop - pixelCrop Object provided by react-image-crop
-    // {String} fileName - Name of the returned file in Promise
     private getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName?: string) => {
         const canvas = document.createElement("canvas");
         canvas.width = pixelCrop.width;

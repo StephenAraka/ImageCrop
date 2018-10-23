@@ -36,12 +36,12 @@
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="maxWidth" type="integer">
+        <property key="maxWidth" type="integer" defaultValue="700">
             <caption>Maximum width</caption>
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="maxHeight" type="integer">
+        <property key="maxHeight" type="integer" defaultValue="700">
             <caption>Maximum height</caption>
             <category>Cropping</category>
             <description/>
