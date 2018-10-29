@@ -27,12 +27,18 @@ export interface ImageCropProps {
 }
 
 export interface ImageCropState {
-    crop: Crop;
+    crop?: Crop;
     img: string;
+    enabled: boolean;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     ourImage!: HTMLImageElement;
+    CanvasNode!: HTMLImageElement;
+    pixelCrop: PixelCrop;
+    crop: Crop;
+    // private ReactCrop: any;
+
     constructor(props: ImageCropProps) {
         super(props);
         this.state = {
@@ -41,7 +47,8 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 y: 10,
                 width: 400
             },
-            img: ""
+            img: "",
+            enabled: false
         };
 
     }
@@ -51,36 +58,48 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             { className: "react-crop-wrapper" },
             createElement(ReactCrop, {
                 className: "react-crop",
-                minWidth: this.props.minWidth,
-                minHeight: this.props.minHeight,
-                maxWidth: this.props.maxWidth,
-                maxHeight: this.props.maxHeight,
+                // minWidth: this.props.minWidth,
+                // minHeight: this.props.minHeight,
+                // maxWidth: this.props.maxWidth,
+                // maxHeight: this.props.maxHeight,
+                onComplete:  this.onComplete,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                onComplete: this.onComplete,
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
-            })
+            }),
+            createElement("button", {
+                className: "btn btn-default",
+                onClick: this.resetCrop,
+                style: { visibility: this.state.enabled === false ? "hidden" : "visible" }
+            }, "Cancel")
         );
     }
+
+    // private handleClick = () => {
+    // //  this.onComplete(this.crop, this.pixelCrop);
+    // this.props.onClickAction(this.state.img);
+    // }
 
     private onImageLoaded = (target: HTMLImageElement) => {
         this.ourImage = target;
     }
 
     private onChange = (crop: Crop) => {
+        this.setState({ enabled: true });
         this.setState({ crop });
     }
 
     private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
-        this.setState({ img: this.convertCanvasToImage(pixelCrop) });
-        this.props.onClickAction(this.state.img);
+        this.setState({ img: this.convertCanvasToImage(pixelCrop) as string });
     }
 
     private getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName?: string) => {
         const canvas = document.createElement("canvas");
+        if (pixelCrop) {
         canvas.width = pixelCrop.width;
         canvas.height = pixelCrop.height;
+        }
         const ctx = canvas.getContext("2d");
         if (ctx) {
             if (pixelCrop) {
@@ -100,10 +119,17 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         return canvas;
     }
 
-    convertCanvasToImage = (pixelCrop: PixelCrop) => {
+    private resetCrop = () => {
+
+        this.setState({ crop: undefined });
+    }
+
+    private convertCanvasToImage = (pixelCrop: PixelCrop) => {
         const image3: HTMLImageElement = new Image();
-        image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
-        return image3.src;
+        if (this.ourImage) {
+            image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
+            return image3.src;
+        }
     }
 }
 

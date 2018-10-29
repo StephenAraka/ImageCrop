@@ -25,6 +25,7 @@ declare module "react-image-crop" {
         maxWidth?: number;
         maxHeight?: number;
         keepSelection?: boolean;
+        handleClick?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onChange?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onComplete?: (crop: Crop, pixelCrop: PixelCrop) => void;
         onImageLoaded?: (target: HTMLImageElement) => void;
