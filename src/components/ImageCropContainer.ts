@@ -27,10 +27,11 @@ export interface ImageCropContainerProps extends WrapperProps {
 }
 
 export interface ImageCropContainerState {
-  alertMessage?: string;
-  imageUrl: string;
+    alertMessage?: string;
+    imageUrl: string;
 }
 export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
+
   private subscriptionHandles: number[] = [];
   private handleForm = 0;
   state: ImageCropContainerState = {
@@ -118,4 +119,5 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
     return new Blob([ bufferArray ], { type: base64Uri.split(":")[0] });
 }
+
 }

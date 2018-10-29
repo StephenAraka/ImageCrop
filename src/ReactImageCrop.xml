@@ -36,12 +36,20 @@
             <category>Cropping</category>
             <description/>
         </property>
+<<<<<<< HEAD
         <property key="maxWidth" type="integer" defaultValue="700">
+=======
+        <property key="maxWidth" type="integer" defaultValue="10">
+>>>>>>> cancel crop image functionality
             <caption>Maximum width</caption>
             <category>Cropping</category>
             <description/>
         </property>
+<<<<<<< HEAD
         <property key="maxHeight" type="integer" defaultValue="700">
+=======
+        <property key="maxHeight" type="integer" defaultValue="10">
+>>>>>>> cancel crop image functionality
             <caption>Maximum height</caption>
             <category>Cropping</category>
             <description/>

@@ -33,8 +33,8 @@ export interface ImageCropState {
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-    ourImage!: HTMLImageElement;
-    CanvasNode!: HTMLImageElement;
+    ourImage: HTMLImageElement;
+    CanvasNode: HTMLImageElement;
     pixelCrop: PixelCrop;
     crop: Crop;
     // private ReactCrop: any;
@@ -65,6 +65,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 onComplete:  this.onComplete,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
+                // onDragEnd: this.DragCrop,// ---------------------- TODO: work on this
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded
             }),
@@ -86,7 +87,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     }
 
     private onChange = (crop: Crop) => {
-        this.setState({ enabled: true });
         this.setState({ crop });
     }
 
