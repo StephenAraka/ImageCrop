@@ -18,26 +18,24 @@ export interface Crop {
     height?: number;
 }
 export interface ImageCropProps {
-    minWidth: number;
-    minHeight: number;
-    maxWidth: number;
-    maxHeight: number;
+    editable?: boolean;
+    keepSelection?: boolean;
+    minWidth?: number;
+    minHeight?: number;
+    maxWidth?: number;
+    maxHeight?: number;
     imageUrl: string;
-    onClickAction(imageUrl?: string): void;
+    saveImage(imageUrl?: string): void;
 }
 
 export interface ImageCropState {
     crop?: Crop;
-    img: string;
+    image: string;
     enabled: boolean;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-    ourImage!: HTMLImageElement;
-    CanvasNode!: HTMLImageElement;
-    pixelCrop: PixelCrop;
-    crop: Crop;
-    // private ReactCrop: any;
+    private targetImage!: HTMLImageElement;
 
     constructor(props: ImageCropProps) {
         super(props);
@@ -45,9 +43,10 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             crop: {
                 x: 20,
                 y: 10,
-                width: 400
+                width: 40,
+                height: 40
             },
-            img: "",
+            image: "",
             enabled: false
         };
 
@@ -58,15 +57,17 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             { className: "react-crop-wrapper" },
             createElement(ReactCrop, {
                 className: "react-crop",
-                // minWidth: this.props.minWidth,
-                // minHeight: this.props.minHeight,
-                // maxWidth: this.props.maxWidth,
-                // maxHeight: this.props.maxHeight,
+                disabled: this.props.editable,
+                keepSelection: this.props.keepSelection,
                 onComplete:  this.onComplete,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
                 onChange: this.onChange,
-                onImageLoaded: this.onImageLoaded
+                onImageLoaded: this.onImageLoaded,
+                minWidth: this.props.minWidth,
+                minHeight: this.props.minHeight,
+                maxWidth: this.props.maxWidth,
+                maxHeight: this.props.maxHeight
             }),
             createElement("button", {
                 className: "btn btn-default",
@@ -76,13 +77,18 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         );
     }
 
-    // private handleClick = () => {
-    // //  this.onComplete(this.crop, this.pixelCrop);
-    // this.props.onClickAction(this.state.img);
-    // }
-
     private onImageLoaded = (target: HTMLImageElement) => {
-        this.ourImage = target;
+        this.targetImage = target;
+
+        const { minWidth, minHeight, maxWidth, maxHeight } = this.props;
+        if (minWidth && minHeight && maxWidth && maxHeight && maxWidth > minWidth && maxHeight > minHeight) {
+            this.setState({ crop: {
+                x: 20,
+                y: 20,
+                width: this.props.minWidth,
+                height: this.props.minHeight
+            } });
+        }
     }
 
     private onChange = (crop: Crop) => {
@@ -90,11 +96,12 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         this.setState({ crop });
     }
 
-    private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
-        this.setState({ img: this.convertCanvasToImage(pixelCrop) as string });
+    private onComplete = (pixelCrop: PixelCrop) => {
+        this.setState({ image: this.convertCanvasToImage(pixelCrop) as string });
+        this.props.saveImage(this.state.image);
     }
 
-    private getCroppedImg = (image: any, pixelCrop: PixelCrop, _fileName?: string) => {
+    private getCroppedImg = (image: any, pixelCrop: PixelCrop) => {
         const canvas = document.createElement("canvas");
         if (pixelCrop) {
         canvas.width = pixelCrop.width;
@@ -120,15 +127,14 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     }
 
     private resetCrop = () => {
-
         this.setState({ crop: undefined });
     }
 
     private convertCanvasToImage = (pixelCrop: PixelCrop) => {
-        const image3: HTMLImageElement = new Image();
-        if (this.ourImage) {
-            image3.src = this.getCroppedImg(this.ourImage, pixelCrop, "x").toDataURL("image/png");
-            return image3.src;
+        const croppedImage: HTMLImageElement = new Image();
+        if (this.targetImage) {
+            croppedImage.src = this.getCroppedImg(this.targetImage, pixelCrop).toDataURL("image/png");
+            return croppedImage.src;
         }
     }
 }

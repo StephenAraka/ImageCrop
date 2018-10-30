@@ -46,16 +46,12 @@
             <category>Cropping</category>
             <description/>
         </property>
-        <property key="keepSelection" type="enumeration" defaultValue="true">
+        <property key="keepSelection" type="boolean" defaultValue="true">
             <caption>Keep Selection</caption>
             <category>Cropping</category>
             <description>Choose whether to keep focus if user clicks outside the selection area</description>
-            <enumerationValues>
-                <enumerationValue key="true">Yes</enumerationValue>
-                <enumerationValue key="false">No</enumerationValue>
-            </enumerationValues>
         </property>
-        <property key="onClickOption" type="enumeration" defaultValue="doNothing">
+        <property key="afterCropOption" type="enumeration" defaultValue="doNothing">
             <caption>On click</caption>
             <category>Events</category>
             <description/>
@@ -66,10 +62,16 @@
                 <enumerationValue key="showPage">Show page</enumerationValue>
             </enumerationValues>
         </property>
-        <property key="onClickMicroflow" type="microflow" required="false">
+        <property key="afterCropMicroflow" type="microflow" required="false">
             <caption>On click microflow</caption>
             <category>Events</category>
             <description>The microflow to call when an image is clicked</description>
+            <returnType type="Void"/>
+        </property>
+        <property key="afterCropNanoflow" type="nanoflow" required="false">
+            <caption>On click nanoflow</caption>
+            <category>Events</category>
+            <description>The nanoflow to call when an image is clicked</description>
             <returnType type="Void"/>
         </property>
         <property key="onClickForm" type="form" required="false">
