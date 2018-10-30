@@ -42,6 +42,7 @@ export interface ImageCropContainerState {
 }
 
 export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
+
   private subscriptionHandles: number[] = [];
   private handleFormHandle = 0;
   state: ImageCropContainerState = {
