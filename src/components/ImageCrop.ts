@@ -35,15 +35,7 @@ export interface ImageCropState {
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-<<<<<<< HEAD
-    private targetImage!: HTMLImageElement;
-=======
-    ourImage: HTMLImageElement;
-    CanvasNode: HTMLImageElement;
-    pixelCrop: PixelCrop;
-    crop: Crop;
-    // private ReactCrop: any;
->>>>>>> 1a76a6fb2affe5a909b3df71768dd5c3b1cf9075
+    private targetImage: HTMLImageElement;
 
     constructor(props: ImageCropProps) {
         super(props);

@@ -100,7 +100,6 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
   }
 
   private resetSubscriptions(mxObject?: mendix.lib.MxObject) {
-<<<<<<< HEAD
     if (mxObject) {
       this.handleFormHandle = this.props.mxform.listen("commit", this.handleCommit);
     }
@@ -120,18 +119,8 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     }
 
     this.handleAfterCropAction();
+    this.executeAction(this.props.afterCropMicroflow, mxObject.getGuid());
   }
-=======
-    // TODO: Subscribe to the entity
-    // TODO: Susbscribe to the attribute
-    if (mxObject)
-    this.handleForm = this.props.mxform.listen("commit", this.handleCommit);
-  }
-
-  private handleCommit() {
-    this.saveImage(this.state.imageUrl);
-}
->>>>>>> save on form commit
 
   private saveImage = (croppedImageUrl: string) => {
     this.setState({ croppedImageUrl });
@@ -158,6 +147,19 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
             error: error => window.mx.ui.error(
                 `An error occurred while executing the nanoflow: ${error.message}`
             )
+        });
+    }
+}
+
+  private executeAction(actionName: string, guid: string) {
+    if (actionName && guid) {
+        window.mx.ui.action(actionName, {
+            error: (error) =>
+                window.mx.ui.error(`Error while executing microflow ${actionName}: ${error.message}`),
+            params: {
+                applyto: "selection",
+                guids: [ guid ]
+            }
         });
     }
 }
