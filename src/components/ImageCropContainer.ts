@@ -100,6 +100,7 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
   }
 
   private resetSubscriptions(mxObject?: mendix.lib.MxObject) {
+<<<<<<< HEAD
     if (mxObject) {
       this.handleFormHandle = this.props.mxform.listen("commit", this.handleCommit);
     }
@@ -120,6 +121,17 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
     this.handleAfterCropAction();
   }
+=======
+    // TODO: Subscribe to the entity
+    // TODO: Susbscribe to the attribute
+    if (mxObject)
+    this.handleForm = this.props.mxform.listen("commit", this.handleCommit);
+  }
+
+  private handleCommit() {
+    this.saveImage(this.state.imageUrl);
+}
+>>>>>>> save on form commit
 
   private saveImage = (croppedImageUrl: string) => {
     this.setState({ croppedImageUrl });

@@ -70,7 +70,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 onComplete:  this.onComplete,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                // onDragEnd: this.DragCrop,// ---------------------- TODO: work on this
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded,
                 minWidth: this.props.minWidth,
