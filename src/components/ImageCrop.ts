@@ -88,7 +88,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             if (aspectRatio === "square") {
                 this.setState({
                     crop: {
-                        aspect: 4 / 3,
+                        aspect: 1 / 1,
                         x: 20,
                         y: 20,
                         width: minWidth,
