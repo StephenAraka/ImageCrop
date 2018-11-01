@@ -51,6 +51,15 @@
             <category>Cropping</category>
             <description>Choose whether to keep focus if user clicks outside the selection area</description>
         </property>
+        <property key="aspectRatio" type="enumeration" defaultValue="square">
+            <caption>Aspect ratio</caption>
+            <category>Cropping</category>
+            <description/>
+            <enumerationValues>
+                <enumerationValue key="square">Square</enumerationValue>
+                <enumerationValue key="cover">16:9</enumerationValue>
+            </enumerationValues>
+        </property>
         <property key="afterCropOption" type="enumeration" defaultValue="doNothing">
             <caption>On click</caption>
             <category>Events</category>

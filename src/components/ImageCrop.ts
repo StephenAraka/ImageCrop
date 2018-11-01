@@ -17,7 +17,10 @@ export interface Crop {
     width?: number;
     height?: number;
 }
+
+type aspectRatioOptions = "square" | "cover";
 export interface ImageCropProps {
+    aspectRatio?: aspectRatioOptions;
     editable?: boolean;
     keepSelection?: boolean;
     minWidth?: number;
@@ -35,15 +38,7 @@ export interface ImageCropState {
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-<<<<<<< HEAD
     private targetImage!: HTMLImageElement;
-=======
-    ourImage: HTMLImageElement;
-    CanvasNode: HTMLImageElement;
-    pixelCrop: PixelCrop;
-    crop: Crop;
-    // private ReactCrop: any;
->>>>>>> 1a76a6fb2affe5a909b3df71768dd5c3b1cf9075
 
     constructor(props: ImageCropProps) {
         super(props);
@@ -67,10 +62,9 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 className: "react-crop",
                 disabled: this.props.editable,
                 keepSelection: this.props.keepSelection,
-                onComplete:  this.onComplete,
+                onComplete: this.onComplete,
                 crop: this.state.crop,
                 src: this.props.imageUrl,
-                // onDragEnd: this.DragCrop,// ---------------------- TODO: work on this
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded,
                 minWidth: this.props.minWidth,
@@ -89,14 +83,29 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     private onImageLoaded = (target: HTMLImageElement) => {
         this.targetImage = target;
 
-        const { minWidth, minHeight, maxWidth, maxHeight } = this.props;
+        const { minWidth, minHeight, maxWidth, maxHeight, aspectRatio } = this.props;
         if (minWidth && minHeight && maxWidth && maxHeight && maxWidth > minWidth && maxHeight > minHeight) {
-            this.setState({ crop: {
-                x: 20,
-                y: 20,
-                width: this.props.minWidth,
-                height: this.props.minHeight
-            } });
+            if (aspectRatio === "square") {
+                this.setState({
+                    crop: {
+                        aspect: 4 / 3,
+                        x: 20,
+                        y: 20,
+                        width: minWidth,
+                        height: minHeight
+                    }
+                });
+            } else if (aspectRatio === "cover") {
+                this.setState({
+                    crop: {
+                        aspect: 16 / 9,
+                        x: 20,
+                        y: 20,
+                        width: minWidth,
+                        height: minHeight
+                    }
+                });
+            }
         }
     }
 
@@ -112,8 +121,8 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     private getCroppedImg = (image: any, pixelCrop: PixelCrop) => {
         const canvas = document.createElement("canvas");
         if (pixelCrop) {
-        canvas.width = pixelCrop.width;
-        canvas.height = pixelCrop.height;
+            canvas.width = pixelCrop.width;
+            canvas.height = pixelCrop.height;
         }
         const ctx = canvas.getContext("2d");
         if (ctx) {
