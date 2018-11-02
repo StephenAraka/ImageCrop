@@ -51,17 +51,21 @@
             <category>Cropping</category>
             <description>Choose whether to keep focus if user clicks outside the selection area</description>
         </property>
-        <property key="aspectRatio" type="enumeration" defaultValue="square">
+        <property key="aspectRatio" type="enumeration" defaultValue="freeCrop">
             <caption>Aspect ratio</caption>
             <category>Cropping</category>
             <description/>
             <enumerationValues>
+                <enumerationValue key="freeCrop">Free crop</enumerationValue>
                 <enumerationValue key="square">Square</enumerationValue>
-                <enumerationValue key="cover">16:9</enumerationValue>
+                <enumerationValue key="landscape1">Landscape (16:9)</enumerationValue>
+                <enumerationValue key="landscape2">Landscape (12:6)</enumerationValue>
+                <enumerationValue key="portrait1">Portrait (2:3)</enumerationValue>
+                <enumerationValue key="portrait2">Portrait (4:5)</enumerationValue>
             </enumerationValues>
         </property>
         <property key="afterCropOption" type="enumeration" defaultValue="doNothing">
-            <caption>On click</caption>
+            <caption>On save</caption>
             <category>Events</category>
             <description/>
             <enumerationValues>
@@ -72,21 +76,21 @@
             </enumerationValues>
         </property>
         <property key="afterCropMicroflow" type="microflow" required="false">
-            <caption>On click microflow</caption>
+            <caption>On save microflow</caption>
             <category>Events</category>
-            <description>The microflow to call when an image is clicked</description>
+            <description>The microflow to call when an image is saved</description>
             <returnType type="Void"/>
         </property>
         <property key="afterCropNanoflow" type="nanoflow" required="false">
-            <caption>On click nanoflow</caption>
+            <caption>On save nanoflow</caption>
             <category>Events</category>
-            <description>The nanoflow to call when an image is clicked</description>
+            <description>The nanoflow to call when an image is saved</description>
             <returnType type="Void"/>
         </property>
         <property key="onClickForm" type="form" required="false">
-            <caption>On click page</caption>
+            <caption>On save page</caption>
             <category>Events</category>
-            <description>The page to open when an image is clicked</description>
+            <description>The page to open when an image is saved</description>
         </property>
         <property key="openPageAs" type="enumeration" defaultValue="content">
             <caption>Open page as</caption>

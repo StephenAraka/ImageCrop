@@ -126,26 +126,31 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     }
 
     private handleAfterCropAction = () => {
-        const { mxform, afterCropOption, afterCropMicroflow, afterCropNanoflow } = this.props;
+        const { mxform, mxObject, afterCropOption, afterCropNanoflow } = this.props;
         const context = new mendix.lib.MxContext();
         context.setContext(this.props.mxObject.getEntity(), this.props.mxObject.getGuid());
 
-        if (afterCropOption === "callMicroflow" && afterCropMicroflow && this.props.mxObject.getGuid()) {
-            window.mx.ui.action(afterCropMicroflow, {
-                context,
-                origin: mxform,
-                error: error => window.mx.ui.error(
-                    `An error occurred while executing the microflow: ${afterCropMicroflow}: ${error.message}`
-                )
-            });
+        if (afterCropOption === "callMicroflow") {
+            this.executeAction(afterCropOption, mxObject.getGuid());
         } else if (afterCropOption === "callNanoflow" && afterCropNanoflow.nanoflow) {
             window.mx.data.callNanoflow({
                 nanoflow: afterCropNanoflow,
                 origin: mxform,
                 context,
-                error: error => window.mx.ui.error(
-                    `An error occurred while executing the nanoflow: ${error.message}`
-                )
+                error: (error) => window.mx.ui.error(`An error occurred while executing the nanoflow ${afterCropNanoflow}: ${error.message}`)
+            });
+        }
+    }
+
+    private executeAction = (actionName: string, guid: string) => {
+        if (actionName && guid) {
+            window.mx.ui.action(actionName, {
+                error: (error) =>
+                    window.mx.ui.error(`An error occured while executing the microflow ${actionName}: ${error.message}`),
+                params: {
+                    applyto: "selection",
+                    guids: [ guid ]
+                }
             });
         }
     }

@@ -10,3 +10,8 @@ button.btn {
   width: 100px;
   margin-top: 10px;
 }
+.ReactCrop__drag-handle {
+  border: 1px solid #39f;
+  box-sizing: border-box;
+  outline: 1px solid transparent;
+}
