@@ -1,4 +1,4 @@
-import { Component, createElement } from "react";
+import { Component, ReactChild, createElement } from "react";
 import ImageCrop from "./ImageCrop";
 
 type Editable = "default" | "never";
@@ -153,6 +153,24 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
                 }
             });
         }
+    }
+
+    public static validateProps(props: ImageCropContainerProps): ReactChild {
+        const errorMessages: string[] = [];
+
+        if (props.afterCropOption === "callMicroflow" && !props.afterCropMicroflow) {
+            errorMessages.push("On click event is set to 'Call a microflow' but no microflow is selected");
+        } else if (props.afterCropOption === "callNanoflow" && !props.afterCropNanoflow.nanoflow) {
+            errorMessages.push("On click event is set to 'Call a nanoflow' but no nanoflow is selected");
+        }
+        if (errorMessages.length) {
+            return createElement("div", {},
+                "Error in crop configuration:",
+                errorMessages.map((message, key) => createElement("p", { key }, message))
+            );
+        }
+
+        return "";
     }
 
     private base64toBlob = (base64Uri: string): Blob => {

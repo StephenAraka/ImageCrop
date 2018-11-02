@@ -38,7 +38,7 @@ export interface ImageCropState {
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
-    private targetImage!: HTMLImageElement;
+    private targetImage: HTMLImageElement;
 
     constructor(props: ImageCropProps) {
         super(props);
