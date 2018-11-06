@@ -39,6 +39,8 @@ export interface ImageCropContainerState {
     alertMessage?: string;
     imageUrl: string;
     croppedImageUrl: string;
+    rotate: boolean;
+    toggle: boolean;
 }
 
 export default class ImageCropContainer extends Component<ImageCropContainerProps, ImageCropContainerState> {
@@ -47,7 +49,9 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     private handleFormHandle = 0;
     state: ImageCropContainerState = {
         imageUrl: "",
-        croppedImageUrl: ""
+        croppedImageUrl: "",
+        rotate: false,
+        toggle: false
     };
 
     render() {

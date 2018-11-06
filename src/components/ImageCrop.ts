@@ -28,6 +28,7 @@ export interface ImageCropProps {
     maxWidth?: number;
     maxHeight?: number;
     imageUrl: string;
+    rotate: number;
     saveImage(imageUrl?: string): void;
 }
 
@@ -35,6 +36,8 @@ export interface ImageCropState {
     crop?: Crop;
     image: string;
     enabled: boolean;
+    imageUrl: string;
+    angleInDegrees: number;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
@@ -50,9 +53,15 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 height: this.props.minHeight
             },
             image: "",
-            enabled: false
+            enabled: false,
+            imageUrl: props.imageUrl,
+            angleInDegrees: 0
         };
 
+    }
+
+    componentWillReceiveProps(newProps: ImageCropProps) {
+            this.setState({ imageUrl: newProps.imageUrl });
     }
 
     render() {
@@ -64,7 +73,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 keepSelection: this.props.keepSelection,
                 onComplete: this.onComplete,
                 crop: this.state.crop,
-                src: this.props.imageUrl,
+                src: this.state.imageUrl,
                 onChange: this.onChange,
                 onImageLoaded: this.onImageLoaded,
                 minWidth: this.props.minWidth,
@@ -77,25 +86,19 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 onClick: this.resetCrop,
                 style: { visibility: this.state.enabled === false ? "hidden" : "visible" }
             }, "Cancel")
-            // ,
-            // createElement("button", {
-            //     className: "btn btn-default"
-            //     // onClick: this.rotateImage
-            // }, "Rotate")
+            ,
+            createElement("button", {
+                className: "btn btn-default",
+                onClick: this.rotateRight
+            }, "Rotate Right"),
+            createElement("button", {
+                className: "btn btn-default",
+                onClick: this.rotateLeft
+            }, "Rotate Left")
         );
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
-        if (this.props.editable === false) {
-            this.setState({ crop :
-                {
-                    x: 0,
-                    y: 0,
-                    width: 0,
-                    height: 0
-                }
-            });
-        }
         this.getAspectRatio();
         this.targetImage = target;
     }
@@ -135,6 +138,48 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
 
     private resetCrop = () => {
         this.setState({ crop: undefined });
+    }
+
+    private rotateRight = (pixelCrop: PixelCrop) => {
+        this.setState({ angleInDegrees: (this.state.angleInDegrees + 90) % 360 });
+        this.drawRotated(this.state.angleInDegrees, pixelCrop);
+    }
+
+    private rotateLeft = (pixelCrop: PixelCrop) => {
+        if (this.state.angleInDegrees === 0) {
+            this.setState({ angleInDegrees: 270 });
+        } else {
+            this.setState({ angleInDegrees: (this.state.angleInDegrees - 90) % 360 });
+        }
+        this.drawRotated(this.state.angleInDegrees, pixelCrop);
+    }
+
+    private drawRotated = (degrees: number, pixelCrop: PixelCrop) => {
+        const image = this.targetImage;
+        const canvas = this.getCroppedImg(image, pixelCrop);
+
+        const ctx = canvas.getContext("2d");
+        canvas.style.width = "20%";
+
+        if (degrees === 90 || degrees === 270) {
+            canvas.width = image.height;
+            canvas.height = image.width;
+        } else {
+            canvas.width = image.width;
+            canvas.height = image.height;
+        }
+        if (ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (degrees === 90 || degrees === 270) {
+            ctx.translate(image.height / 2, image.width / 2);
+        } else {
+            ctx.translate(image.width / 2, image.height / 2);
+        }
+        ctx.rotate(degrees * Math.PI / 180);
+        ctx.drawImage(image, -image.width / 2, -image.height / 2);
+    }
+        const rotatedCanvas = canvas.toDataURL("image/png");
+        this.setState({ imageUrl: rotatedCanvas });
     }
 
     private convertCanvasToImage = (pixelCrop: PixelCrop) => {
