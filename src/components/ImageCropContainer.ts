@@ -104,6 +104,8 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     }
 
     private resetSubscriptions(mxObject?: mendix.lib.MxObject) {
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
+        this.subscriptionHandles = [];
         if (mxObject) {
             this.handleFormHandle = this.props.mxform.listen("commit", this.handleCommit);
         }
@@ -123,6 +125,7 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
         }
 
         this.handleAfterCropAction();
+        this.executeAction(this.props.afterCropMicroflow, mxObject.getGuid());
     }
 
     private saveImage = (croppedImageUrl: string) => {
@@ -151,6 +154,19 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
             window.mx.ui.action(actionName, {
                 error: (error) =>
                     window.mx.ui.error(`An error occured while executing the microflow ${actionName}: ${error.message}`),
+                params: {
+                    applyto: "selection",
+                    guids: [ guid ]
+                }
+            });
+        }
+    }
+
+    private executeAction(actionName: string, guid: string) {
+        if (actionName && guid) {
+            window.mx.ui.action(actionName, {
+                error: (error) =>
+                    window.mx.ui.error(`Error while executing microflow ${actionName}: ${error.message}`),
                 params: {
                     applyto: "selection",
                     guids: [ guid ]
