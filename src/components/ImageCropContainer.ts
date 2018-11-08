@@ -158,7 +158,10 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
             });
         }
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> rotate crop
     public static validateProps(props: ImageCropContainerProps): ReactChild {
         const errorMessages: string[] = [];
 
