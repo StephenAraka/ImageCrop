@@ -37,7 +37,6 @@ export interface ImageCropState {
     crop?: Crop;
     image: string;
     imageUrl: string;
-    currentAngle: number;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
@@ -53,8 +52,7 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 height: this.props.minHeight
             },
             image: "",
-            imageUrl: props.imageUrl,
-            currentAngle: 0
+            imageUrl: props.imageUrl
         };
 
     }
@@ -81,14 +79,11 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 maxHeight: this.props.maxHeight
             }),
             createElement("button", {
-                className: "btn btn-default",
-                onClick: this.rotateRight
-            }, "Rotate Right"),
-            createElement("button", {
-                className: "btn btn-default",
-                onClick: this.rotateLeft
-            }, "Rotate Left")
-        );
+                className: "btn btn-info",
+                onClick: this.rotateImage
+            },
+            createElement("span", { className: "glyphicon glyphicon-refresh" }), "Rotate")
+            );
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
@@ -127,36 +122,29 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         return canvas;
     }
 
-    private rotateRight = (pixelCrop: PixelCrop) => {
+    private rotateImage = (pixelCrop: PixelCrop) => {
         let angleInDegrees = 0;
         angleInDegrees = (angleInDegrees + 90) % 360;
-        this.drawRotated(angleInDegrees, pixelCrop);
-        this.setState({ currentAngle: angleInDegrees });
-    }
-
-    private rotateLeft = (pixelCrop: PixelCrop) => {
-        let angleInDegrees = 0;
-        this.state.currentAngle === 0 ? angleInDegrees = 270 : angleInDegrees -= 90 % 360;
         this.drawRotated(angleInDegrees, pixelCrop);
     }
 
     private drawRotated = (degrees: number, pixelCrop: PixelCrop) => {
         const image = this.targetImage;
         const canvas = this.getCroppedImg(image, pixelCrop);
+
         const ctx = canvas.getContext("2d");
         canvas.style.width = "20%";
+        const isHorizontal = (degrees === 90 || degrees === 270);
+        canvas.width = isHorizontal ? image.height : image.width;
+        canvas.height = isHorizontal ? image.width : image.height;
 
-        if (degrees === 90 || degrees === 270) {
-            canvas.width = image.height;
-            canvas.height = image.width;
-        } else {
-            canvas.width = image.width;
-            canvas.height = image.height;
-        }
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            degrees === 90 || degrees === 270 ? ctx.translate(image.height / 2, image.width / 2) : ctx.translate(image.width / 2, image.height / 2);
-
+            if (isHorizontal) {
+                ctx.translate(image.height / 2, image.width / 2);
+            } else {
+                ctx.translate(image.width / 2, image.height / 2);
+            }
             ctx.rotate(degrees * Math.PI / 180);
             ctx.drawImage(image, -image.width / 2, -image.height / 2);
         }
@@ -181,7 +169,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         if (aspectRatio === "freeCrop") {
             this.setState({
                 crop: {
-                    aspect: imageAspectRatio,
                     x: 20,
                     y: 20,
                     width: minWidth,
