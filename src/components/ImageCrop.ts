@@ -136,18 +136,13 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
 
     private rotateLeft = (pixelCrop: PixelCrop) => {
         let angleInDegrees = 0;
-        if (this.state.currentAngle === 0) {
-            angleInDegrees = 270;
-        } else {
-            angleInDegrees -= 90 % 360;
-        }
+        this.state.currentAngle === 0 ? angleInDegrees = 270 : angleInDegrees -= 90 % 360;
         this.drawRotated(angleInDegrees, pixelCrop);
     }
 
     private drawRotated = (degrees: number, pixelCrop: PixelCrop) => {
         const image = this.targetImage;
         const canvas = this.getCroppedImg(image, pixelCrop);
-
         const ctx = canvas.getContext("2d");
         canvas.style.width = "20%";
 
@@ -160,11 +155,8 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         }
         if (ctx) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (degrees === 90 || degrees === 270) {
-                ctx.translate(image.height / 2, image.width / 2);
-            } else {
-                ctx.translate(image.width / 2, image.height / 2);
-            }
+            degrees === 90 || degrees === 270 ? ctx.translate(image.height / 2, image.width / 2) : ctx.translate(image.width / 2, image.height / 2);
+
             ctx.rotate(degrees * Math.PI / 180);
             ctx.drawImage(image, -image.width / 2, -image.height / 2);
         }
