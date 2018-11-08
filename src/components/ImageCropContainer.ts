@@ -49,6 +49,7 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
     private handleFormHandle = 0;
     state: ImageCropContainerState = {
         imageUrl: "",
+
         croppedImageUrl: "",
         rotate: false,
         toggle: false
@@ -99,12 +100,37 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
         }
     }
 
+    private updateState() {
+        this.setState({
+            imageUrl: this.getAttributeValue(this.props.dataUrl, this.props.mxObject)
+        });
+    }
+
     private getAttributeValue(attributeName: string, mxObject?: mendix.lib.MxObject): string {
         return mxObject ? mxObject.get(attributeName) as string : "";
     }
 
     private resetSubscriptions(mxObject?: mendix.lib.MxObject) {
+        this.subscriptionHandles.forEach(window.mx.data.unsubscribe);
+        this.subscriptionHandles = [];
         if (mxObject) {
+
+            this.subscriptionHandles.push(window.mx.data.subscribe({
+                callback: this.updateState.bind(this),
+                guid: mxObject.getGuid()
+            }));
+
+            this.subscriptionHandles.push(mx.data.subscribe({
+                attr: this.props.dataUrl,
+                callback: this.updateState,
+                guid: mxObject.getGuid()
+            }));
+
+            this.subscriptionHandles.push(mx.data.subscribe({
+                callback: this.handleValidations,
+                guid: mxObject.getGuid(),
+                val: true
+            }));
             this.handleFormHandle = this.props.mxform.listen("commit", this.handleCommit);
         }
     }
@@ -127,6 +153,15 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
 
     private saveImage = (croppedImageUrl: string) => {
         this.setState({ croppedImageUrl });
+    }
+
+    private handleValidations(validations: mendix.lib.ObjectValidation[]) {
+        const validationMessage = validations[0].getErrorReason(this.props.dataUrl);
+        validations[0].removeAttribute(this.props.dataUrl);
+
+        if (validationMessage) {
+            this.setState({ alertMessage: validationMessage });
+        }
     }
 
     private handleAfterCropAction = () => {
@@ -158,10 +193,6 @@ export default class ImageCropContainer extends Component<ImageCropContainerProp
             });
         }
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> rotate crop
     public static validateProps(props: ImageCropContainerProps): ReactChild {
         const errorMessages: string[] = [];
 
