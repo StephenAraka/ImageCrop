@@ -20,6 +20,7 @@ export interface Crop {
 
 type aspectRatioOptions = "freeCrop" | "square" | "landscape1" | "landscape2" | "portrait1" | "portrait2";
 export interface ImageCropProps {
+    dataUrl: string;
     aspectRatio?: aspectRatioOptions;
     editable?: boolean;
     keepSelection?: boolean;
@@ -28,16 +29,15 @@ export interface ImageCropProps {
     maxWidth?: number;
     maxHeight?: number;
     imageUrl: string;
-    rotate: number;
+    alertMessage?: string;
     saveImage(imageUrl?: string): void;
 }
 
 export interface ImageCropState {
     crop?: Crop;
     image: string;
-    enabled: boolean;
     imageUrl: string;
-    angleInDegrees: number;
+    currentAngle: number;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
@@ -53,15 +53,14 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 height: this.props.minHeight
             },
             image: "",
-            enabled: false,
             imageUrl: props.imageUrl,
-            angleInDegrees: 0
+            currentAngle: 0
         };
 
     }
 
     componentWillReceiveProps(newProps: ImageCropProps) {
-            this.setState({ imageUrl: newProps.imageUrl });
+        this.setState({ imageUrl: newProps.imageUrl });
     }
 
     render() {
@@ -83,12 +82,6 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             }),
             createElement("button", {
                 className: "btn btn-default",
-                onClick: this.resetCrop,
-                style: { visibility: this.state.enabled === false ? "hidden" : "visible" }
-            }, "Cancel")
-            ,
-            createElement("button", {
-                className: "btn btn-default",
                 onClick: this.rotateRight
             }, "Rotate Right"),
             createElement("button", {
@@ -103,14 +96,12 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         this.targetImage = target;
     }
 
-    private onChange = (crop: Crop) => {
+    private onChange = (crop: Crop, _pixelCrop: PixelCrop) => {
         this.setState({ crop });
     }
 
     private onComplete = (_crop: Crop, pixelCrop: PixelCrop) => {
-        this.setState({ enabled: true });
-        this.setState({ image: this.convertCanvasToImage(pixelCrop) as string });
-        this.props.saveImage(this.state.image);
+        this.props.saveImage(this.convertCanvasToImage(pixelCrop));
     }
 
     private getCroppedImg = (image: any, pixelCrop: PixelCrop) => {
@@ -136,22 +127,21 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
         return canvas;
     }
 
-    private resetCrop = () => {
-        this.setState({ crop: undefined });
-    }
-
     private rotateRight = (pixelCrop: PixelCrop) => {
-        this.setState({ angleInDegrees: (this.state.angleInDegrees + 90) % 360 });
-        this.drawRotated(this.state.angleInDegrees, pixelCrop);
+        let angleInDegrees = 0;
+        angleInDegrees = (angleInDegrees + 90) % 360;
+        this.drawRotated(angleInDegrees, pixelCrop);
+        this.setState({ currentAngle: angleInDegrees });
     }
 
     private rotateLeft = (pixelCrop: PixelCrop) => {
-        if (this.state.angleInDegrees === 0) {
-            this.setState({ angleInDegrees: 270 });
+        let angleInDegrees = 0;
+        if (this.state.currentAngle === 0) {
+            angleInDegrees = 270;
         } else {
-            this.setState({ angleInDegrees: (this.state.angleInDegrees - 90) % 360 });
+            angleInDegrees -= 90 % 360;
         }
-        this.drawRotated(this.state.angleInDegrees, pixelCrop);
+        this.drawRotated(angleInDegrees, pixelCrop);
     }
 
     private drawRotated = (degrees: number, pixelCrop: PixelCrop) => {
@@ -169,17 +159,20 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             canvas.height = image.height;
         }
         if (ctx) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        if (degrees === 90 || degrees === 270) {
-            ctx.translate(image.height / 2, image.width / 2);
-        } else {
-            ctx.translate(image.width / 2, image.height / 2);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (degrees === 90 || degrees === 270) {
+                ctx.translate(image.height / 2, image.width / 2);
+            } else {
+                ctx.translate(image.width / 2, image.height / 2);
+            }
+            ctx.rotate(degrees * Math.PI / 180);
+            ctx.drawImage(image, -image.width / 2, -image.height / 2);
         }
-        ctx.rotate(degrees * Math.PI / 180);
-        ctx.drawImage(image, -image.width / 2, -image.height / 2);
-    }
         const rotatedCanvas = canvas.toDataURL("image/png");
-        this.setState({ imageUrl: rotatedCanvas });
+        const croppedImage = new Image();
+        croppedImage.src = rotatedCanvas;
+        this.setState({ imageUrl: croppedImage.src });
+        return croppedImage.src;
     }
 
     private convertCanvasToImage = (pixelCrop: PixelCrop) => {
@@ -192,66 +185,37 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
 
     private getAspectRatio = () => {
         const { aspectRatio, minHeight, minWidth } = this.props;
-        if (aspectRatio === "square") {
+        let imageAspectRatio;
+        if (aspectRatio === "freeCrop") {
             this.setState({
                 crop: {
-                    aspect: 1 / 1,
+                    aspect: imageAspectRatio,
                     x: 20,
                     y: 20,
                     width: minWidth,
                     height: minHeight
                 }
             });
+        } else if (aspectRatio === "square") {
+            imageAspectRatio = 1 / 1;
         } else if (aspectRatio === "portrait1") {
-            this.setState({
-                crop: {
-                    aspect: 2 / 3,
-                    x: 20,
-                    y: 20,
-                    width: minWidth,
-                    height: minHeight
-                }
-            });
+            imageAspectRatio = 2 / 3;
         } else if (aspectRatio === "portrait2") {
-            this.setState({
-                crop: {
-                    aspect: 4 / 5,
-                    x: 20,
-                    y: 20,
-                    width: minWidth,
-                    height: minHeight
-                }
-            });
+            imageAspectRatio = 4 / 5;
         } else if (aspectRatio === "landscape1") {
-            this.setState({
-                crop: {
-                    aspect: 16 / 9,
-                    x: 20,
-                    y: 20,
-                    width: minWidth,
-                    height: minHeight
-                }
-            });
+            imageAspectRatio = 16 / 9;
         } else if (aspectRatio === "landscape2") {
-            this.setState({
-                crop: {
-                    aspect: 12 / 6,
-                    x: 20,
-                    y: 20,
-                    width: minWidth,
-                    height: minHeight
-                }
-            });
-        } else {
-            this.setState({
-                crop: {
-                    x: 20,
-                    y: 20,
-                    width: minWidth,
-                    height: minHeight
-                }
-            });
+            imageAspectRatio = 12 / 6;
         }
+        this.setState({
+            crop: {
+                aspect: imageAspectRatio,
+                x: 20,
+                y: 20,
+                width: minWidth,
+                height: minHeight
+            }
+        });
     }
 }
 
