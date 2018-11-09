@@ -153,11 +153,10 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
             ctx.rotate(degrees * Math.PI / 180);
             ctx.drawImage(image, -image.width / 2, -image.height / 2);
         }
-        const rotatedCanvas = canvas.toDataURL("image/png");
-        const croppedImage = new Image();
-        croppedImage.src = rotatedCanvas;
-        this.setState({ imageUrl: croppedImage.src });
-        return croppedImage.src;
+        const rotatedCanvas = new Image();
+        rotatedCanvas.src = canvas.toDataURL("image/png");
+        this.setState({ imageUrl : rotatedCanvas.src });
+        return canvas;
     }
 
     private convertCanvasToImage = (pixelCrop: PixelCrop) => {
