@@ -1,6 +1,6 @@
 ## ReactImageCrop
-The widget enables you to crop an image.
-##features
+Enables users to crop an image.
+## Features
  - Responsive
  - Touch enabled
  - Free-form or fixed aspect crops

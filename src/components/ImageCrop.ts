@@ -37,6 +37,7 @@ export interface ImageCropState {
     crop?: Crop;
     image: string;
     imageUrl: string;
+    imageIsLoaded: boolean;
 }
 
 export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
@@ -52,7 +53,8 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
                 height: this.props.minHeight
             },
             image: "",
-            imageUrl: props.imageUrl
+            imageUrl: props.imageUrl,
+            imageIsLoaded: false
         };
 
     }
@@ -87,8 +89,11 @@ export class ImageCrop extends Component<ImageCropProps, ImageCropState> {
     }
 
     private onImageLoaded = (target: HTMLImageElement) => {
-        this.getAspectRatio();
-        this.targetImage = target;
+        if (this.state.imageIsLoaded === false) {
+            this.getAspectRatio();
+            this.targetImage = target;
+            this.setState({ imageIsLoaded: true });
+        } else return;
     }
 
     private onChange = (crop: Crop, _pixelCrop: PixelCrop) => {
